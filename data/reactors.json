@@ -1,0 +1,292 @@
+[
+  {
+    "eicCode": "17W100P100P0090I",
+    "plantId": "BELLEVILLE",
+    "power_MW": 1310
+  },
+  {
+    "eicCode": "17W100P100P0091G",
+    "plantId": "BELLEVILLE",
+    "power_MW": 1310
+  },
+  {
+    "eicCode": "17W100P100P0092E",
+    "plantId": "BLAYAIS",
+    "power_MW": 910
+  },
+  {
+    "eicCode": "17W100P100P0093C",
+    "plantId": "BLAYAIS",
+    "power_MW": 910
+  },
+  {
+    "eicCode": "17W100P100P0094A",
+    "plantId": "BLAYAIS",
+    "power_MW": 910
+  },
+  {
+    "eicCode": "17W100P100P00958",
+    "plantId": "BLAYAIS",
+    "power_MW": 910
+  },
+  {
+    "eicCode": "17W100P100P00966",
+    "plantId": "BUGEY",
+    "power_MW": 910
+  },
+  {
+    "eicCode": "17W100P100P00974",
+    "plantId": "BUGEY",
+    "power_MW": 910
+  },
+  {
+    "eicCode": "17W100P100P00982",
+    "plantId": "BUGEY",
+    "power_MW": 880
+  },
+  {
+    "eicCode": "17W100P100P01004",
+    "plantId": "BUGEY",
+    "power_MW": 880
+  },
+  {
+    "eicCode": "17W100P100P01012",
+    "plantId": "CATTENOM",
+    "power_MW": 1300
+  },
+  {
+    "eicCode": "17W100P100P0103Z",
+    "plantId": "CATTENOM",
+    "power_MW": 1300
+  },
+  {
+    "eicCode": "17W100P100P0104X",
+    "plantId": "CATTENOM",
+    "power_MW": 1300
+  },
+  {
+    "eicCode": "17W100P100P0105V",
+    "plantId": "CATTENOM",
+    "power_MW": 1300
+  },
+  {
+    "eicCode": "17W100P100P0106T",
+    "plantId": "CHINON",
+    "power_MW": 905
+  },
+  {
+    "eicCode": "17W100P100P0107R",
+    "plantId": "CHINON",
+    "power_MW": 905
+  },
+  {
+    "eicCode": "17W100P100P0108P",
+    "plantId": "CHINON",
+    "power_MW": 905
+  },
+  {
+    "eicCode": "17W100P100P0109N",
+    "plantId": "CHINON",
+    "power_MW": 905
+  },
+  {
+    "eicCode": "17W100P100P01101",
+    "plantId": "CHOOZ",
+    "power_MW": 1500
+  },
+  {
+    "eicCode": "17W100P100P0112Y",
+    "plantId": "CHOOZ",
+    "power_MW": 1500
+  },
+  {
+    "eicCode": "17W100P100P0113W",
+    "plantId": "CIVAUX",
+    "power_MW": 1450
+  },
+  {
+    "eicCode": "17W100P100P0114U",
+    "plantId": "CIVAUX",
+    "power_MW": 1450
+  },
+  {
+    "eicCode": "17W100P100P0115S",
+    "plantId": "CRUAS",
+    "power_MW": 915
+  },
+  {
+    "eicCode": "17W100P100P0116Q",
+    "plantId": "CRUAS",
+    "power_MW": 915
+  },
+  {
+    "eicCode": "17W100P100P0118M",
+    "plantId": "CRUAS",
+    "power_MW": 915
+  },
+  {
+    "eicCode": "17W100P100P0119K",
+    "plantId": "CRUAS",
+    "power_MW": 915
+  },
+  {
+    "eicCode": "17W100P100P0120Z",
+    "plantId": "DAMPIERRE",
+    "power_MW": 890
+  },
+  {
+    "eicCode": "17W100P100P0121X",
+    "plantId": "DAMPIERRE",
+    "power_MW": 890
+  },
+  {
+    "eicCode": "17W100P100P0122V",
+    "plantId": "DAMPIERRE",
+    "power_MW": 890
+  },
+  {
+    "eicCode": "17W100P100P0123T",
+    "plantId": "DAMPIERRE",
+    "power_MW": 890
+  },
+  {
+    "eicCode": "17W100P100P0124R",
+    "plantId": "FESSENHEIM",
+    "power_MW": 880
+  },
+  {
+    "eicCode": "17W100P100P0125P",
+    "plantId": "FESSENHEIM",
+    "power_MW": 880
+  },
+  {
+    "eicCode": "17W100P100P0126N",
+    "plantId": "FLAMANVILLE",
+    "power_MW": 1330
+  },
+  {
+    "eicCode": "17W100P100P0127L",
+    "plantId": "FLAMANVILLE",
+    "power_MW": 1330
+  },
+  {
+    "eicCode": "17W100P100P0128J",
+    "plantId": "GOLFECH",
+    "power_MW": 1310
+  },
+  {
+    "eicCode": "17W100P100P0129H",
+    "plantId": "GOLFECH",
+    "power_MW": 1310
+  },
+  {
+    "eicCode": "17W100P100P0130W",
+    "plantId": "GRAVELINES",
+    "power_MW": 910
+  },
+  {
+    "eicCode": "17W100P100P0131U",
+    "plantId": "GRAVELINES",
+    "power_MW": 910
+  },
+  {
+    "eicCode": "17W100P100P0132S",
+    "plantId": "GRAVELINES",
+    "power_MW": 910
+  },
+  {
+    "eicCode": "17W100P100P0133Q",
+    "plantId": "GRAVELINES",
+    "power_MW": 910
+  },
+  {
+    "eicCode": "17W100P100P0135M",
+    "plantId": "GRAVELINES",
+    "power_MW": 910
+  },
+  {
+    "eicCode": "17W100P100P0136K",
+    "plantId": "GRAVELINES",
+    "power_MW": 910
+  },
+  {
+    "eicCode": "17W100P100P0137I",
+    "plantId": "NOGENT",
+    "power_MW": 1310
+  },
+  {
+    "eicCode": "17W100P100P0138G",
+    "plantId": "NOGENT",
+    "power_MW": 1310
+  },
+  {
+    "eicCode": "17W100P100P0139E",
+    "plantId": "PALUEL",
+    "power_MW": 1330
+  },
+  {
+    "eicCode": "17W100P100P0140T",
+    "plantId": "PALUEL",
+    "power_MW": 1330
+  },
+  {
+    "eicCode": "17W100P100P0141R",
+    "plantId": "PALUEL",
+    "power_MW": 1330
+  },
+  {
+    "eicCode": "17W100P100P0142P",
+    "plantId": "PALUEL",
+    "power_MW": 1330
+  },
+  {
+    "eicCode": "17W100P100P0143N",
+    "plantId": "PENLY",
+    "power_MW": 1330
+  },
+  {
+    "eicCode": "17W100P100P0144L",
+    "plantId": "PENLY",
+    "power_MW": 1330
+  },
+  {
+    "eicCode": "17W100P100P0145J",
+    "plantId": "ST_ALBAN",
+    "power_MW": 1335
+  },
+  {
+    "eicCode": "17W100P100P0146H",
+    "plantId": "ST_ALBAN",
+    "power_MW": 1335
+  },
+  {
+    "eicCode": "17W100P100P0147F",
+    "plantId": "ST_LAURENT",
+    "power_MW": 915
+  },
+  {
+    "eicCode": "17W100P100P0148D",
+    "plantId": "ST_LAURENT",
+    "power_MW": 915
+  },
+  {
+    "eicCode": "17W100P100P0149B",
+    "plantId": "TRICASTIN",
+    "power_MW": 915
+  },
+  {
+    "eicCode": "17W100P100P0150Q",
+    "plantId": "TRICASTIN",
+    "power_MW": 915
+  },
+  {
+    "eicCode": "17W100P100P0152M",
+    "plantId": "TRICASTIN",
+    "power_MW": 915
+  },
+  {
+    "eicCode": "17W100P100P0153K",
+    "plantId": "TRICASTIN",
+    "power_MW": 915
+  }
+]

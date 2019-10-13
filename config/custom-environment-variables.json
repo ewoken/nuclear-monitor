@@ -1,0 +1,6 @@
+{
+  "server": {
+    "port": "PORT"
+  },
+  "RTE_API_KEY": "RTE_API_KEY"
+}
