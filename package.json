@@ -2,6 +2,7 @@
   "name": "nuclear-monitor",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://ewoken.github.io/nuclear-monitor/",
   "dependencies": {
     "antd": "^3.22.0",
     "babel-plugin-import": "^1.12.0",
@@ -31,7 +32,7 @@
     "build": "react-app-rewired build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build --message \"[ci skip] Circle CI deploy\" --user \"Circle CI <circleci@circleci.org>\""
   },
   "eslintConfig": {
     "extends": "react-app"
