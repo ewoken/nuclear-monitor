@@ -17,10 +17,6 @@ async function fetchToken() {
   });
   const data = await res.json();
 
-  if (!res.ok) {
-    console.log(data);
-  }
-
   return data.access_token;
 }
 
@@ -31,6 +27,12 @@ async function getRessource({ ressource, params = {}, token }) {
       Authorization: `Bearer ${token}`,
     },
   });
+
+  if (!res.ok) {
+    const text = await res.text();
+    return { error: text, code: res.status };
+  }
+
   const data = await res.json();
   return data;
 }

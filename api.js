@@ -7,10 +7,7 @@ const cors = require('cors');
 const compression = require('compression');
 const helmet = require('helmet');
 
-// const moment = require('moment-timezone');
-
-const PLANTS = require('./data/plants.json');
-const REACTORS = require('./data/reactors.json');
+const { plants: PLANTS, reactors: REACTORS } = require('./data');
 
 const {
   errorHandlerMiddleware,
@@ -19,10 +16,11 @@ const {
   notFoundMiddleware,
 } = require('./middlewares');
 
-const { getRessource } = require('./rteApi'); // DATE_FORMAT
+const { getProductions } = require('./services');
 
-function buildApi({ logger, rteToken }) {
+function buildApi(environment) {
   const app = express();
+  const { logger } = environment;
 
   app.use(addRequestIdMiddleware());
   app.use(logRequestMiddleware(logger));
@@ -40,38 +38,15 @@ function buildApi({ logger, rteToken }) {
     res.json(REACTORS);
   });
 
-  let cache = null;
   app.get('/productions', async (req, res) => {
-    if (cache) {
-      logger.info('cache');
-      res.json(cache);
-      return;
-    }
-
-    const data = await getRessource({
-      ressource: 'actual_generation/v1/actual_generations_per_unit',
-      // params: {
-      //   start_date: moment()
-      //     .startOf('day')
-      //     .tz('Europe/Paris')
-      //     .format(DATE_FORMAT),
-      //   end_date: moment()
-      //     .startOf('hour')
-      //     .tz('Europe/Paris')
-      //     .format(DATE_FORMAT),
-      // },
-      token: rteToken,
-    });
-    const nuclearPlant = data.actual_generations_per_unit
-      .filter(d => d.unit.production_type === 'NUCLEAR')
-      .map(reactor => ({
-        eicCode: reactor.unit.eic_code,
-        values: reactor.values,
-      }));
-
-    cache = nuclearPlant;
-    res.json(nuclearPlant);
+    const productions = await getProductions(environment);
+    res.json(productions);
   });
+
+  // app.get('/mix', async (req, res) => {
+  //   const mix = await getMix();
+  //   res.json(mix);
+  // });
 
   app.use(notFoundMiddleware());
   app.use(errorHandlerMiddleware(logger));
