@@ -1,25 +1,29 @@
 import React from 'react';
 
-const HEIGHT = '70px';
-const WIDTH = '50px';
+const { ReactorType } = require('../../../utils/types');
 
 function ReactorIndicator(props) {
-  const { power, load } = props;
-  const absLoad = load < 0 ? 0 : load;
-  const part = Math.floor((absLoad / power) * 100);
+  const { reactor } = props;
+  const absLoad = Math.max(0, reactor.actualProd);
+  const part = Math.floor((absLoad / reactor.power_MW) * 100);
 
   return (
-    <span
+    <div
       className="ReactIndicator"
       style={{
-        height: HEIGHT,
-        width: WIDTH,
-        background: `linear-gradient(0deg, rgba(9,121,23,1) 0%, rgba(9,121,23,1) ${part}%, rgba(255,255,255,1) ${part}%)`,
+        background: `linear-gradient(0deg, #26a65b 0%, #26a65b ${part}%, rgba(255,255,255,1) ${part}%)`,
       }}
     >
-      <span className="ReactIndicator__label">{absLoad}</span>
-    </span>
+      <strong>{Math.floor(absLoad)}</strong>
+      <br />
+      <strong>MW</strong>
+      <div className="ReactIndicator__number">{reactor.reactorIndex}</div>
+    </div>
   );
 }
+
+ReactorIndicator.propTypes = {
+  reactor: ReactorType.isRequired,
+};
 
 export default ReactorIndicator;

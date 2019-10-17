@@ -5,12 +5,14 @@ import thunk from 'redux-thunk';
 import plantsReducer from './plants';
 import reactorsReducer from './reactors';
 import productionsReducer from './productions';
+import mixReducer from './mix';
 
 const rootReducer = combineReducers({
   // ...reducers,
   plants: plantsReducer,
   reactors: reactorsReducer,
   productions: productionsReducer,
+  mix: mixReducer,
 });
 
 const enhancers = [applyMiddleware(thunk)];

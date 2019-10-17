@@ -7,14 +7,12 @@ import {
   Switch,
   Redirect,
   withRouter,
+  Link,
 } from 'react-router-dom';
 import { Layout, Spin, Row, Col, Drawer } from 'antd';
-import { Map, TileLayer, Marker, ZoomControl } from 'react-leaflet';
 
 import MixView from '../views/MixView';
 import PlantView from '../views/PlantView';
-
-// import HeaderMenu from './HeaderMenu';
 
 import buildLoader from '../HOC/buildLoader';
 import {
@@ -28,88 +26,81 @@ import {
   loadAllProductions,
   productionsLoadedSelector,
 } from '../store/productions';
+import { loadAllMix, mixLoadedSelector } from '../store/mix';
 
+import { testScreenType, HEADER_HEIGHT, DRAWER_WIDTH } from '../utils';
 import { PlantType } from '../utils/types';
+import PlantMap from './PlantMap';
 
 const PlantsLoader = buildLoader(loadAllPlants);
 const ReactorsLoader = buildLoader(loadAllReactors);
 const ProductionsLoader = buildLoader(loadAllProductions);
-
-// const ConnectedHeaderMenu = withRouter(
-//   connect((state, props) => ({
-//     countries: countriesSelector(state),
-//     areas: areasSelector(state),
-//     goTo: url => props.history.push(url),
-//   }))(HeaderMenu),
-// );
-
-const { body } = document;
-const html = document.documentElement;
-
-const height = Math.max(
-  body.scrollHeight,
-  body.offsetHeight,
-  html.clientHeight,
-  html.scrollHeight,
-  html.offsetHeight,
-);
+const MixLoader = buildLoader(loadAllMix);
 
 function AppLayout(props) {
-  const { isLoaded, plants, goTo } = props;
+  const { isLoaded, plants, goTo, currentPlantId } = props;
+  const isSmallScreen = !testScreenType('sm');
+  const drawerHeight = currentPlantId === 'mix' ? 310 : 200;
+
   return (
     <div className="AppLayout">
       <PlantsLoader />
       <ReactorsLoader />
       <ProductionsLoader />
-      <Spin size="large" spinning={!isLoaded}>
+      <MixLoader />
+      <Spin
+        size="large"
+        spinning={!isLoaded}
+        indicator={
+          // eslint-disable-next-line react/jsx-wrap-multilines
+          <div>
+            <img
+              className="AppLayout__loadingIcon"
+              src="loading_icon.svg"
+              alt=""
+            />
+          </div>
+        }
+      >
+        {!isLoaded && <div className="AppLayout__splash" />}
         {isLoaded && (
           <Layout>
             <Drawer
-              title="Nuclear Monitor"
+              title={isSmallScreen ? null : <Link to="/">Nuclear monitor</Link>}
               visible
-              placement="left"
+              placement={isSmallScreen ? 'top' : 'left'}
+              style={{ marginTop: isSmallScreen ? HEADER_HEIGHT : 0 }}
               mask={false}
               closable={false}
-              width={300}
+              width={DRAWER_WIDTH}
+              height={drawerHeight}
+              bodyStyle={{ padding: 0 }}
             >
               <Switch>
-                <Route path="/" exact component={MixView} />
+                <Route path="/mix" exact component={MixView} />
                 <Route path="/plant/:plantId" exact component={PlantView} />
-                {/* <Route
-                path="/country/:countryCode/:tab?"
-                exact
-                component={CountryView}
-              /> */}
-                <Route component={() => <Redirect to={{ pathname: '/' }} />} />
+                <Route
+                  component={() => <Redirect to={{ pathname: '/mix' }} />}
+                />
               </Switch>
             </Drawer>
-            {/* <Layout.Header className="AppLayout__header">
-            <ConnectedHeaderMenu />
-          </Layout.Header> */}
             <Row>
               <Col span={24}>
+                {isSmallScreen && (
+                  <Layout.Header className="AppLayout__header">
+                    <Link to="/mix">
+                      <strong>Nuclear monitor</strong>
+                    </Link>
+                  </Layout.Header>
+                )}
                 <Layout.Content className="AppLayout__content">
-                  <Map
-                    center={[47.505, 2]}
-                    zoom={6}
-                    style={{ height }}
-                    zoomControl={false}
-                  >
-                    <ZoomControl position="topright" />
-                    <TileLayer
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                    />
-                    {plants.map(plant => (
-                      <Marker
-                        key={plant.id}
-                        position={plant.coords}
-                        onClick={() => goTo(`/plant/${plant.id}`)}
-                      />
-                    ))}
-                  </Map>
+                  <PlantMap
+                    plants={plants}
+                    currentPlantId={currentPlantId}
+                    onPlantClick={plant => goTo(`/plant/${plant.id}`)}
+                    drawerHeight={drawerHeight}
+                  />
                 </Layout.Content>
-                {/* <Layout.Footer></Layout.Footer> */}
               </Col>
             </Row>
           </Layout>
@@ -123,6 +114,11 @@ AppLayout.propTypes = {
   isLoaded: PropTypes.bool.isRequired,
   plants: PropTypes.arrayOf(PlantType).isRequired,
   goTo: PropTypes.func.isRequired,
+  currentPlantId: PropTypes.string,
+};
+
+AppLayout.defaultProps = {
+  currentPlantId: null,
 };
 
 // withRouter needed to prevent blocking
@@ -131,8 +127,10 @@ export default withRouter(
     isLoaded:
       plantsLoadedSelector(state) &&
       reactorsLoadedSelector(state) &&
-      productionsLoadedSelector(state),
+      productionsLoadedSelector(state) &&
+      mixLoadedSelector(state),
     plants: plantsSelector(state),
     goTo: url => props.history.push(url),
+    currentPlantId: props.location.pathname.split('/').pop(),
   }))(AppLayout),
 );

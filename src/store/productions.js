@@ -70,7 +70,8 @@ export function productionSelector(eicCode, state) {
 }
 
 export function actualProdOfReactor(eicCode, state) {
-  return state.productions.data[eicCode].values.pop();
+  const t = state.productions.data[eicCode].values; // TODO
+  return t[t.length - 1];
 }
 
 export default productionsReducer;
