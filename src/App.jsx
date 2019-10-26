@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { HashRouter as Router } from 'react-router-dom';
+import { HashRouter as Router, Route } from 'react-router-dom';
 
 import store from './store';
 
@@ -11,7 +11,9 @@ function App() {
     <div className="App">
       <Provider store={store}>
         <Router>
-          <AppLayout />
+          <Route path="/">
+            <AppLayout />
+          </Route>
         </Router>
       </Provider>
     </div>

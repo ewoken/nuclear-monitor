@@ -1,5 +1,12 @@
 import PropTypes from 'prop-types';
 
+export const ProductionType = PropTypes.shape({
+  startDate: PropTypes.string.isRequired,
+  endDate: PropTypes.string.isRequired,
+  updatedDate: PropTypes.string.isRequired,
+  value: PropTypes.number.isRequired,
+});
+
 export const PlantType = PropTypes.shape({
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
@@ -21,7 +28,7 @@ export const ReactorType = PropTypes.shape({
   buildStartYear: PropTypes.number.isRequired,
   gridLinkYear: PropTypes.number.isRequired,
   exploitationStartYear: PropTypes.number.isRequired,
-  actualProd: PropTypes.number.isRequired, // TODO
+  dayProductions: PropTypes.arrayOf(ProductionType).isRequired,
 });
 
 export const MixType = PropTypes.shape({

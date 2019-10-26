@@ -4,8 +4,30 @@ body {
   height: 100%;
 }
 
+
 .App {
   height: 100%;
+}
+
+.AppLayout__header {
+  display: flex;
+}
+
+/* .AppLayout__header .AppLayout__menu {
+  margin-left: 10%;
+} */
+
+.AppLayout__menu li {
+  line-height: 64px;
+}
+
+.ant-drawer-content-wrapper {
+  overflow-y: scroll;
+}
+
+.ant-drawer .ant-drawer-content-wrapper .ant-drawer-content {
+  min-height: 100%;
+  height: auto;
 }
 
 .AppLayout__content {
@@ -38,94 +60,12 @@ body {
   padding: 0 20px;
 }
 
-.PlantView {
+.HomeView {
   padding: 15px;
 }
 
-.PlantView__firstRow {
-  display: flex;
-  justify-content: space-between;
-}
-
-.PlantView__wiki {
-  height: 20px;
-  margin: 0px 5px 0px 0px;
-}
-
-.PlantView__asn {
-  height: 20px;
-}
-
-.PlantView__schema {
-  margin-top: 15px;
-}
-
-.PlantView__reactors {
-}
-
-.PlantView__cooling {
-  background: #2f7bd9;
-  margin-left: 3px;
-  margin-top: 5px;
-  padding: 5px;
-  color: white;
-  font-weight: bold;
+.HomeView__marker {
+  margin-top: 50px;
   text-align: center;
-}
-
-.ReactIndicator {
-  display: inline-block;
-  text-align: center;
-  vertical-align: bottom;
-
-  border: solid 1px;
-  border-radius: 20% 20% 0px 0px;
-  position: relative;
-  margin-left: 3px;
-  margin-right: 3px;
-  width: 45px;
-  height: 60px;
   font-size: 9pt;
 }
-
-.ReactIndicator__number {
-  background: white;
-  position: absolute;
-  bottom: -1px;
-  left: -1px;
-  line-height: 11pt;
-  border: solid 1px;
-}
-
-.MixView__header {
-  display: flex;
-  width: 100%;
-  flex-wrap: wrap;
-}
-
-.MixView__header__item {
-  width: 16.666%;
-  height: 35px;
-  color: white;
-  text-align: center;
-  font-size: 8pt;
-  padding: 0px 0px 0px 0px;
-  word-wrap: normal;
-}
-
-.MixView__header__item__small {
-  font-size: 7pt;
-}
-
-.MixView_chart {
-  width: 100%;
-  height: 200px;
-}
-
-.MixView__sliderContainer {
-  width: 100%;
-  padding-left: 4px;
-  padding-right: 14px;
-}
-
-

@@ -2,15 +2,44 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+import {
+  Route, // as BaseRoute,
+  Switch,
+  Link,
+  Redirect,
+} from 'react-router-dom';
 import { Row, Col, Select, Tag } from 'antd';
+
 import { plantSelector, plantsSelector } from '../../store/plants';
 import { PlantType, ReactorType } from '../../utils/types';
 import ReactorIndicator from './components/ReactorIndicator';
-import { reactorsOfPlantSelector } from '../../store/reactors';
-import { actualProdOfReactor } from '../../store/productions';
+import {
+  reactorsOfPlantSelector,
+  reactorByPlantAndIndexSelector,
+} from '../../store/reactors';
+import ReactorDetails from './components/ReactorDetails';
+
+import './index.css';
+
+const ReactorDetailsContainer = connect((state, props) => {
+  return {
+    reactor: reactorByPlantAndIndexSelector(
+      {
+        plantId: props.match.params.plantId,
+        reactorIndex: Number(props.match.params.reactorIndex),
+      },
+      state,
+    ),
+  };
+})(ReactorDetails);
 
 function PlantView(props) {
   const { plants, currentPlant, reactors, goTo } = props;
+
+  if (!currentPlant) {
+    return <Redirect to="/" />;
+  }
+
   return (
     <div className="PlantView">
       <Row>
@@ -19,6 +48,7 @@ function PlantView(props) {
             <div className="PlantView__firstRow__left">
               <Select
                 value={currentPlant.id}
+                size="large"
                 onChange={id => goTo(`/plant/${id}`)}
                 style={{ width: '9em' }}
               >
@@ -52,22 +82,16 @@ function PlantView(props) {
             </div>
           </div>
 
-          {/* {currentPlant.hasCoolingTower && (
-            <span>
-              {reactors.map(() => (
-                <img
-                  src="coolingTower.svg"
-                  alt="cooling tower"
-                  style={{ heigth: 15, width: 15, margin: 1 }}
-                />
-              ))}
-            </span>
-          )} */}
-
           <div className="PlantView__schema">
+            <div>Production (MW)</div>
             <div className="PlantView__reactors">
               {reactors.map(reactor => (
-                <ReactorIndicator key={reactor.eicCode} reactor={reactor} />
+                <Link
+                  key={reactor.eicCode}
+                  to={`/plant/${currentPlant.id}/${reactor.reactorIndex}`}
+                >
+                  <ReactorIndicator reactor={reactor} />
+                </Link>
               ))}
             </div>
             <div
@@ -76,6 +100,19 @@ function PlantView(props) {
             >
               {currentPlant.coolingPlace}
             </div>
+          </div>
+          <div className="PlantView__footer">
+            <Switch>
+              <Route
+                path="/plant/:plantId/:reactorIndex"
+                component={ReactorDetailsContainer}
+              />
+              <Route
+                component={() => (
+                  <small>(Cliquer sur un réacteur pour plus de détails)</small>
+                )}
+              />
+            </Switch>
           </div>
         </Col>
       </Row>
@@ -92,10 +129,7 @@ PlantView.propTypes = {
 
 export default connect((state, props) => {
   const { plantId } = props.match.params;
-  const reactors = reactorsOfPlantSelector(plantId, state).map(reactor => ({
-    ...reactor,
-    actualProd: actualProdOfReactor(reactor.eicCode, state).value,
-  }));
+  const reactors = reactorsOfPlantSelector(plantId, state);
 
   return {
     plants: plantsSelector(state),

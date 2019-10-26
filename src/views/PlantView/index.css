@@ -1,0 +1,87 @@
+.PlantView {
+  padding: 15px;
+}
+
+.PlantView__firstRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+.PlantView__wiki {
+  height: 20px;
+  margin: 0px 5px 0px 0px;
+}
+
+.PlantView__asn {
+  height: 20px;
+}
+
+.PlantView__schema {
+  margin-top: 10px;
+}
+
+.PlantView__reactors {
+  margin-top: 5px;
+}
+
+.PlantView__reactors a {
+  color: black;
+}
+
+.PlantView__reactors a:hover {
+  color: black;
+}
+
+.PlantView__cooling {
+  background: #2f7bd9;
+  margin-left: 3px;
+  margin-top: 5px;
+  padding: 5px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+}
+
+.PlantView__footer {
+  margin-top: 5px;
+  text-align: center;
+}
+
+.ReactIndicator {
+  display: inline-block;
+  text-align: center;
+  vertical-align: bottom;
+
+  border: solid 1px;
+  border-radius: 20% 20% 0px 0px;
+  position: relative;
+  margin-left: 3px;
+  margin-right: 3px;
+  width: 45px;
+  height: 60px;
+  font-size: 9pt;
+}
+
+.ReactIndicator__status {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+}
+
+.ReactIndicator__prod {
+  margin-top: 10px;
+}
+
+.ReactIndicator__number {
+  background: white;
+  position: absolute;
+  bottom: -1px;
+  left: -1px;
+  line-height: 11pt;
+  border: solid 1px;
+}
+
+.ReactorDetails {
+  text-align: initial;
+  margin-top: 20px;
+}

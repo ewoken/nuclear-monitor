@@ -1,0 +1,65 @@
+.MixComponent__header {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.MixComponent__header__item {
+  width: 16.666%;
+  height: 35px;
+  color: white;
+  text-align: center;
+  font-size: 8pt;
+  padding: 0px 0px 0px 0px;
+  word-wrap: normal;
+}
+
+.MixComponent__header__item__small {
+  font-size: 7pt;
+}
+
+.MixComponent__chart {
+  width: 100%;
+  height: 300px;
+}
+
+.MixComponent__sliderContainer {
+  width: 100%;
+  padding-left: 4px;
+  padding-right: 14px;
+}
+
+.MixView__date {
+  text-align: center;
+}
+
+.MixView__nuclear {
+  margin: 20px 10px 10px 10px;
+}
+
+.MixView__nuclear__indicator {
+  height: 40px;
+  width: 100%;
+  background: rgb(247, 47, 47);
+  display: flex;
+  font-size: 9pt;
+}
+
+.MixView__nuclear__indicator__prod {
+  height: 100%;
+  color: white;
+  background: rgb(12, 105, 12);
+  padding-left: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.MixView__nuclear__indicator__available {
+  height: 100%;
+  background: rgb(18, 139, 18);
+}
+
+.MixView__nuclear__prod {
+  color: rgb(12, 105, 12);
+}

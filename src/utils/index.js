@@ -32,5 +32,10 @@ export function getWindowHeight() {
   );
 }
 
+export function format(v) {
+  // eslint-disable-next-line no-restricted-globals
+  return isNaN(v) ? '-' : `${v}`;
+}
+
 export const HEADER_HEIGHT = 64;
 export const DRAWER_WIDTH = 400;

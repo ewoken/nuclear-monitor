@@ -32,8 +32,10 @@ function PlantMap(props) {
       center={[48.3, 2]}
       zoom={isSmallScreen ? 5 : 6}
       style={{
-        height: isSmallScreen ? height - HEADER_HEIGHT - drawerHeight : height,
-        marginTop: isSmallScreen ? HEADER_HEIGHT + drawerHeight : 0, // TODO
+        height: isSmallScreen
+          ? height - HEADER_HEIGHT - drawerHeight
+          : height - HEADER_HEIGHT,
+        marginTop: isSmallScreen ? HEADER_HEIGHT + drawerHeight : HEADER_HEIGHT, // TODO
         marginLeft: isSmallScreen ? 0 : DRAWER_WIDTH,
       }}
       zoomControl={false}
@@ -58,9 +60,13 @@ function PlantMap(props) {
 
 PlantMap.propTypes = {
   plants: PropTypes.arrayOf(PlantType).isRequired,
-  currentPlantId: PropTypes.string.isRequired,
+  currentPlantId: PropTypes.string,
   onPlantClick: PropTypes.func.isRequired,
   drawerHeight: PropTypes.number.isRequired,
+};
+
+PlantMap.defaultProps = {
+  currentPlantId: null,
 };
 
 export default PlantMap;

@@ -8,8 +8,9 @@ import {
   Redirect,
   withRouter,
   Link,
+  matchPath,
 } from 'react-router-dom';
-import { Layout, Spin, Row, Col, Drawer } from 'antd';
+import { Layout, Spin, Row, Col, Drawer, Menu } from 'antd';
 
 import MixView from '../views/MixView';
 import PlantView from '../views/PlantView';
@@ -28,19 +29,30 @@ import {
 } from '../store/productions';
 import { loadAllMix, mixLoadedSelector } from '../store/mix';
 
-import { testScreenType, HEADER_HEIGHT, DRAWER_WIDTH } from '../utils';
+import {
+  testScreenType,
+  HEADER_HEIGHT,
+  DRAWER_WIDTH,
+  getWindowHeight,
+} from '../utils';
 import { PlantType } from '../utils/types';
 import PlantMap from './PlantMap';
+import {
+  loadAllUnavailabilities,
+  unavailabilitiesLoadedSelector,
+} from '../store/unavailabilities';
+import HomeView from '../views/HomeView';
 
 const PlantsLoader = buildLoader(loadAllPlants);
 const ReactorsLoader = buildLoader(loadAllReactors);
 const ProductionsLoader = buildLoader(loadAllProductions);
 const MixLoader = buildLoader(loadAllMix);
+const UnavailabilitiesLoader = buildLoader(loadAllUnavailabilities);
 
 function AppLayout(props) {
-  const { isLoaded, plants, goTo, currentPlantId } = props;
+  const { isLoaded, plants, goTo, currentPlantId, isFullPage } = props;
   const isSmallScreen = !testScreenType('sm');
-  const drawerHeight = currentPlantId === 'mix' ? 310 : 200;
+  const drawerHeight = isFullPage ? getWindowHeight() - HEADER_HEIGHT : 220;
 
   return (
     <div className="AppLayout">
@@ -48,6 +60,7 @@ function AppLayout(props) {
       <ReactorsLoader />
       <ProductionsLoader />
       <MixLoader />
+      <UnavailabilitiesLoader />
       <Spin
         size="large"
         spinning={!isLoaded}
@@ -66,33 +79,46 @@ function AppLayout(props) {
         {isLoaded && (
           <Layout>
             <Drawer
-              title={isSmallScreen ? null : <Link to="/">Nuclear monitor</Link>}
+              title={null}
               visible
               placement={isSmallScreen ? 'top' : 'left'}
-              style={{ marginTop: isSmallScreen ? HEADER_HEIGHT : 0 }}
+              style={{ marginTop: HEADER_HEIGHT }}
               mask={false}
               closable={false}
               width={DRAWER_WIDTH}
               height={drawerHeight}
               bodyStyle={{ padding: 0 }}
+              drawerStyle={{ transition: 'height 2s ease' }}
             >
               <Switch>
+                <Route path="/home" exact component={HomeView} />
                 <Route path="/mix" exact component={MixView} />
-                <Route path="/plant/:plantId" exact component={PlantView} />
+                <Route path="/plant/:plantId" component={PlantView} />
                 <Route
-                  component={() => <Redirect to={{ pathname: '/mix' }} />}
+                  component={() => <Redirect to={{ pathname: '/home' }} />}
                 />
               </Switch>
             </Drawer>
             <Row>
               <Col span={24}>
-                {isSmallScreen && (
-                  <Layout.Header className="AppLayout__header">
-                    <Link to="/mix">
-                      <strong>Nuclear monitor</strong>
-                    </Link>
-                  </Layout.Header>
-                )}
+                <Layout.Header className="AppLayout__header">
+                  <Menu
+                    theme="dark"
+                    mode="horizontal"
+                    className="AppLayout__menu"
+                    selectable={false}
+                  >
+                    <Menu.Item>
+                      <Link to="/home">
+                        <strong>Nuclear monitor</strong>
+                      </Link>
+                    </Menu.Item>
+                    <Menu.Item key="mix">
+                      <Link to="/mix">Mix</Link>
+                    </Menu.Item>
+                  </Menu>
+                </Layout.Header>
+
                 <Layout.Content className="AppLayout__content">
                   <PlantMap
                     plants={plants}
@@ -114,6 +140,7 @@ AppLayout.propTypes = {
   isLoaded: PropTypes.bool.isRequired,
   plants: PropTypes.arrayOf(PlantType).isRequired,
   goTo: PropTypes.func.isRequired,
+  isFullPage: PropTypes.bool.isRequired,
   currentPlantId: PropTypes.string,
 };
 
@@ -123,14 +150,24 @@ AppLayout.defaultProps = {
 
 // withRouter needed to prevent blocking
 export default withRouter(
-  connect((state, props) => ({
-    isLoaded:
-      plantsLoadedSelector(state) &&
-      reactorsLoadedSelector(state) &&
-      productionsLoadedSelector(state) &&
-      mixLoadedSelector(state),
-    plants: plantsSelector(state),
-    goTo: url => props.history.push(url),
-    currentPlantId: props.location.pathname.split('/').pop(),
-  }))(AppLayout),
+  connect((state, props) => {
+    const matchPlantPath = matchPath(props.location.pathname, {
+      path: '/plant/:id',
+      exact: false,
+    });
+    return {
+      isLoaded:
+        plantsLoadedSelector(state) &&
+        reactorsLoadedSelector(state) &&
+        productionsLoadedSelector(state) &&
+        mixLoadedSelector(state) &&
+        unavailabilitiesLoadedSelector(state),
+      plants: plantsSelector(state),
+      goTo: url => props.history.push(url),
+      currentPlantId: matchPlantPath && matchPlantPath.params.id,
+      isFullPage: !!matchPath(props.location.pathname, {
+        path: ['/plant/:id/:reactorIndex', '/mix'],
+      }),
+    };
+  })(AppLayout),
 );

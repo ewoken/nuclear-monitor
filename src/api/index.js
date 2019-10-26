@@ -26,6 +26,13 @@ export async function getProductions() {
   return data;
 }
 
+export async function getUnavailabilities() {
+  const res = await fetch(`${REACT_APP_NUCLEAR_MONITOR_API}/unavailabilities`);
+  const data = await res.json();
+
+  return data;
+}
+
 const START_URL =
   'https://opendata.reseaux-energies.fr/api/records/1.0/search/?';
 const DATE_FORMAT = 'YYYY-MM-DD';
