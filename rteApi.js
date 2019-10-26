@@ -29,8 +29,8 @@ async function getRessource({ ressource, params = {}, token }) {
   });
 
   if (!res.ok) {
-    const text = await res.text();
-    return { error: text, code: res.status };
+    const body = await res.text();
+    return { code: res.status, body };
   }
 
   const data = await res.json();

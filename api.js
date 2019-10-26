@@ -16,7 +16,18 @@ const {
   notFoundMiddleware,
 } = require('./middlewares');
 
-const { getProductions } = require('./services');
+const { getProductions, getUnavailabilities } = require('./services');
+
+function serviceWrapper(service, environment) {
+  return async function wrappedService(req, res, next) {
+    try {
+      const data = await service(environment);
+      res.json(data);
+    } catch (err) {
+      next(err);
+    }
+  };
+}
 
 function buildApi(environment) {
   const app = express();
@@ -38,15 +49,11 @@ function buildApi(environment) {
     res.json(REACTORS);
   });
 
-  app.get('/productions', async (req, res) => {
-    const productions = await getProductions(environment);
-    res.json(productions);
-  });
-
-  // app.get('/mix', async (req, res) => {
-  //   const mix = await getMix();
-  //   res.json(mix);
-  // });
+  app.get('/productions', serviceWrapper(getProductions, environment));
+  app.get(
+    '/unavailabilities',
+    serviceWrapper(getUnavailabilities, environment),
+  );
 
   app.use(notFoundMiddleware());
   app.use(errorHandlerMiddleware(logger));
