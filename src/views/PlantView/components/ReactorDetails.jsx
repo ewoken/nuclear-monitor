@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { Descriptions } from 'antd';
+import { Link } from 'react-router-dom';
+import { Descriptions, Icon } from 'antd';
 import moment from 'moment-timezone';
 
 import { ReactorType } from '../../../utils/types';
@@ -9,7 +10,17 @@ function ReactorDetails({ reactor }) {
   return (
     <div className="ReactorDetails">
       <Descriptions
-        title={`Réacteur ${reactor.name}`}
+        title={
+          // eslint-disable-next-line react/jsx-wrap-multilines
+          <div className="ReactorDetails__header">
+            <div>{reactor.name}</div>
+            <div>
+              <Link to={`/plant/${reactor.plantId}`}>
+                <Icon type="caret-up" theme="filled" />
+              </Link>
+            </div>
+          </div>
+        }
         size="small"
         bordered
         column={1}

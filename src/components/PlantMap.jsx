@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Map, TileLayer, Marker, ZoomControl } from 'react-leaflet';
+import { Map, TileLayer, Marker, ZoomControl, GeoJSON } from 'react-leaflet';
 
 import Leaflet from 'leaflet';
 
@@ -24,7 +24,7 @@ const SELECTED_ICON = new Leaflet.DivIcon.SVGIcon({
 });
 
 function PlantMap(props) {
-  const { plants, currentPlantId, onPlantClick, drawerHeight } = props;
+  const { plants, currentPlantId, onPlantClick, drawerHeight, rivers } = props;
   const isSmallScreen = !testScreenType('sm');
   const height = getWindowHeight();
   return (
@@ -54,12 +54,17 @@ function PlantMap(props) {
           onClick={() => onPlantClick(plant)}
         />
       ))}
+      {rivers.map(river => (
+        <GeoJSON data={river} />
+      ))}
     </Map>
   );
 }
 
 PlantMap.propTypes = {
   plants: PropTypes.arrayOf(PlantType).isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  rivers: PropTypes.array.isRequired,
   currentPlantId: PropTypes.string,
   onPlantClick: PropTypes.func.isRequired,
   drawerHeight: PropTypes.number.isRequired,

@@ -7,6 +7,7 @@ import reactorsReducer from './reactors';
 import productionsReducer from './productions';
 import mixReducer from './mix';
 import unavailabilitiesReducer from './unavailabilities';
+import riversReducer from './rivers';
 
 const rootReducer = combineReducers({
   // ...reducers,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   productions: productionsReducer,
   mix: mixReducer,
   unavailabilities: unavailabilitiesReducer,
+  rivers: riversReducer,
 });
 
 const enhancers = [applyMiddleware(thunk)];

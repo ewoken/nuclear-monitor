@@ -51,13 +51,13 @@ export const GRAPH_ORDER = [
   'hydroPumped',
   'exports',
   'biomass',
-  'wind',
-  'solar',
   'nuclear',
   'hydro',
   'gas',
   'coal',
   'oil',
+  'wind',
+  'solar',
   'imports',
 ];
 

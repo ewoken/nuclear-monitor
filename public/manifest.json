@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Nuclear monitor",
+  "name": "Nuclear monitor",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,18 +8,18 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "logo512.png",
+      "src": "app_icon.png",
       "type": "image/png",
       "sizes": "512x512"
-    }	    
+    },
+    {
+      "src": "app_icon_192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
   ],
-  "start_url": ".",
-  "display": "standalone",
+  "start_url": "./index.html",
+  "display": "portrait",
   "theme_color": "#000000",
   "background_color": "#ffffff"
 }

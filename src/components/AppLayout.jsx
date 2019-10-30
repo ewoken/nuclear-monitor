@@ -41,6 +41,11 @@ import {
   loadAllUnavailabilities,
   unavailabilitiesLoadedSelector,
 } from '../store/unavailabilities';
+import {
+  loadAllRivers,
+  riversLoadedSelector,
+  riversSelector,
+} from '../store/rivers';
 import HomeView from '../views/HomeView';
 
 const PlantsLoader = buildLoader(loadAllPlants);
@@ -48,9 +53,10 @@ const ReactorsLoader = buildLoader(loadAllReactors);
 const ProductionsLoader = buildLoader(loadAllProductions);
 const MixLoader = buildLoader(loadAllMix);
 const UnavailabilitiesLoader = buildLoader(loadAllUnavailabilities);
+const RiversLoader = buildLoader(loadAllRivers);
 
 function AppLayout(props) {
-  const { isLoaded, plants, goTo, currentPlantId, isFullPage } = props;
+  const { isLoaded, plants, goTo, currentPlantId, isFullPage, rivers } = props;
   const isSmallScreen = !testScreenType('sm');
   const drawerHeight = isFullPage ? getWindowHeight() - HEADER_HEIGHT : 220;
 
@@ -61,6 +67,7 @@ function AppLayout(props) {
       <ProductionsLoader />
       <MixLoader />
       <UnavailabilitiesLoader />
+      <RiversLoader />
       <Spin
         size="large"
         spinning={!isLoaded}
@@ -122,6 +129,7 @@ function AppLayout(props) {
                 <Layout.Content className="AppLayout__content">
                   <PlantMap
                     plants={plants}
+                    rivers={rivers}
                     currentPlantId={currentPlantId}
                     onPlantClick={plant => goTo(`/plant/${plant.id}`)}
                     drawerHeight={drawerHeight}
@@ -142,6 +150,8 @@ AppLayout.propTypes = {
   goTo: PropTypes.func.isRequired,
   isFullPage: PropTypes.bool.isRequired,
   currentPlantId: PropTypes.string,
+  // eslint-disable-next-line react/forbid-prop-types
+  rivers: PropTypes.array.isRequired,
 };
 
 AppLayout.defaultProps = {
@@ -161,8 +171,10 @@ export default withRouter(
         reactorsLoadedSelector(state) &&
         productionsLoadedSelector(state) &&
         mixLoadedSelector(state) &&
-        unavailabilitiesLoadedSelector(state),
+        unavailabilitiesLoadedSelector(state) &&
+        riversLoadedSelector(state),
       plants: plantsSelector(state),
+      rivers: riversSelector(state),
       goTo: url => props.history.push(url),
       currentPlantId: matchPlantPath && matchPlantPath.params.id,
       isFullPage: !!matchPath(props.location.pathname, {

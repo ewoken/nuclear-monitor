@@ -85,3 +85,8 @@
   text-align: initial;
   margin-top: 20px;
 }
+
+.ReactorDetails__header {
+  display: flex;
+  justify-content: space-between;
+}

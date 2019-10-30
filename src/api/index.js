@@ -3,9 +3,15 @@ import qs from 'qs';
 
 const { REACT_APP_NUCLEAR_MONITOR_API } = process.env;
 
-export async function getPlants() {
-  await new Promise(resolve => setTimeout(resolve, 2000));
+export async function getRivers() {
+  return Promise.all(
+    ['garonne', 'loire', 'meuse', 'moselle', 'rhin', 'rhone', 'seine'].map(
+      river => fetch(`./rivers/${river}.json`).then(res => res.json()),
+    ),
+  );
+}
 
+export async function getPlants() {
   const res = await fetch(`${REACT_APP_NUCLEAR_MONITOR_API}/plants`);
   const data = await res.json();
 
