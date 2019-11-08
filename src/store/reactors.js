@@ -125,6 +125,7 @@ export function reactorSetIndicatorsSelector(hourOfDay, state) {
       if (reactor.unavailability.availablePower_MW === 0) {
         res2.totally = 1;
       } else {
+        res2.availableCount = 1;
         res2.partially = 1;
       }
       res2.availablePower = reactor.unavailability.availablePower_MW;

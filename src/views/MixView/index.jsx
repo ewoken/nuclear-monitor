@@ -18,14 +18,19 @@ import MixComponent from './components/MixComponent';
 
 function MixView(props) {
   const { mix, slotIndex, setSlotIndex, reactorSetIndicators } = props;
-  const total = Math.floor(reactorSetIndicators.totalPower / 1000);
-  const available = Math.floor(reactorSetIndicators.availablePower);
-  const availabilityRate = Math.floor(
-    (100 * reactorSetIndicators.availablePower) /
-      reactorSetIndicators.totalPower,
-  );
+  const {
+    totalPower,
+    availablePower,
+    availableCount,
+    partiallyUnavailableCount,
+    totallyUnavailableCount,
+  } = reactorSetIndicators;
+
+  const total = Math.floor(totalPower / 1000);
+  const available = Math.floor(availablePower);
+  const availabilityRate = Math.floor((100 * availablePower) / totalPower);
   const prodAvailableRate = Math.floor(
-    (100 * mix[slotIndex].nuclear) / reactorSetIndicators.availablePower,
+    (100 * mix[slotIndex].nuclear) / availablePower,
   );
   const date = moment()
     .tz('Europe/Paris')
@@ -49,8 +54,7 @@ function MixView(props) {
               <div
                 className="MixView__nuclear__indicator__prod"
                 style={{
-                  width: `${((mix[slotIndex].nuclear || 0) /
-                    reactorSetIndicators.totalPower) *
+                  width: `${((mix[slotIndex].nuclear || 0) / totalPower) *
                     100}%`,
                 }}
               >
@@ -60,21 +64,24 @@ function MixView(props) {
               <div
                 className="MixView__nuclear__indicator__available"
                 style={{
-                  width: `${((reactorSetIndicators.availablePower -
-                    (mix[slotIndex].nuclear || 0)) /
-                    reactorSetIndicators.totalPower) *
+                  width: `${((availablePower - (mix[slotIndex].nuclear || 0)) /
+                    totalPower) *
                     100}%`,
                 }}
               />
             </div>
             <div className="MixView__nuclear__available">
-              {`${reactorSetIndicators.availableCount} réacteurs disponibles: ${available} MW (${availabilityRate}%)`}
+              {`${availableCount} réacteurs disponibles: ${available} MW (${availabilityRate}%)`}
             </div>
             <div>
-              {`dont ${reactorSetIndicators.partiallyUnavailableCount} partiellement indisponible(s)`}
+              {`dont ${partiallyUnavailableCount} partiellement indisponible${
+                partiallyUnavailableCount > 1 ? 's' : ''
+              }`}
             </div>
             <div className="MixView__nuclear__stopped">
-              {`${reactorSetIndicators.totallyUnavailableCount} réacteur(s) arrêté(s)`}
+              {`${totallyUnavailableCount} réacteur${
+                totallyUnavailableCount > 1 ? 's' : ''
+              } arrêté${totallyUnavailableCount > 1 ? 's' : ''}`}
             </div>
           </div>
         </Col>
