@@ -128,7 +128,7 @@ L.DivIcon.SVGIcon = L.DivIcon.extend({
       var text = this._createText()
       var className = this.options.className + "-svg"
 
-      var style = "width:" + this.options.iconSize.x + "px; height:" + this.options.iconSize.y + "px;"
+      var style = "width:" + this.options.iconSize.x + "px; height:" + this.options.iconSize.y + "px; " + this.options.style;
 
       var svg = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="' + className + '" style="' + style + '">' + path + circle + text + '</svg>'
 
@@ -199,3 +199,53 @@ L.Marker.SVGMarker = L.Marker.extend({
 L.marker.svgMarker = function(latlng, options) {
   return new L.Marker.SVGMarker(latlng, options)
 }
+
+L.DivIcon.SVGIcon.IndicatorIcon = L.DivIcon.SVGIcon.extend({
+  _createCircle() {
+      const circle = L.DivIcon.SVGIcon.prototype._createCircle.call(this);
+
+      const cx = Number(this.options.circleAnchor.x)
+      const cy = Number(this.options.circleAnchor.y)
+      const radius = this.options.iconSize.x / 2 * Number(this.options.circleRatio)
+
+      const circum = Math.PI * radius;
+      const pieSize = this.options.loadRate * circum;
+
+      const notif = `<circle r="3" cx="${5}" cy="${5}"
+        style="
+          fill: red;
+          stroke: none;
+        "
+      >
+      </circle>`
+
+      const pie = `
+        <circle r="${radius / 2}" cx="${cx}" cy="${cy}"
+          style="
+            transform: rotateZ(-90deg);
+            transform-origin: ${cx}px ${cy}px;
+            fill: none;
+            stroke-width: ${radius};
+            stroke: rgb(38, 166, 91);
+            stroke-dasharray: ${pieSize} ${circum};
+            "
+        >
+        </circle>`;
+
+      console.log(this.options.notif)
+      return this.options.notif ? circle + pie + notif : circle + pie;
+  },
+
+  _createSVG: function() {
+    var path = this._createPath()
+    var circle = this._createCircle()
+    var text = this._createText()
+    var className = this.options.className + "-svg"
+
+    var style = "width:" + this.options.iconSize.x + "px; height:" + this.options.iconSize.y + "px;";
+
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="' + className + '" style="' + style + '">' + path + circle + text + '</svg>'
+
+    return svg
+},
+});

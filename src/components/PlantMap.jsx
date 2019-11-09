@@ -13,15 +13,39 @@ import {
 } from '../utils';
 import { PlantType } from '../utils/types';
 
-const NORMAL_ICON = new Leaflet.DivIcon.SVGIcon({
+const ICON_OPTIONS = {
   fillOpacity: 1,
   iconSize: [24, 38],
-});
-const SELECTED_ICON = new Leaflet.DivIcon.SVGIcon({
-  color: 'red',
-  fillOpacity: 1,
-  iconSize: [24, 38],
-});
+  circleColor: 'white',
+  circleRatio: 0.6,
+  circleWeight: 3,
+};
+
+function hasNotif(plant) {
+  return plant.reactors.reduce((res, reactor) => {
+    if (reactor.status !== 'RUNNING' && reactor.status !== 'PLANNED_STOP') {
+      return true;
+    }
+    return res;
+  }, false);
+}
+
+function plantRatio(plant) {
+  const totalProd = plant.reactors.reduce((res, reactor) => {
+    const prod =
+      reactor.dayProductions.length > 0
+        ? Math.max(
+            reactor.dayProductions[reactor.dayProductions.length - 1].value,
+            0,
+          )
+        : 0;
+
+    return res + prod;
+  }, 0);
+  const totalPower = plant.reactors.reduce((res, r) => res + r.power_MW, 0);
+
+  return totalProd / totalPower;
+}
 
 function PlantMap(props) {
   const { plants, currentPlantId, onPlantClick, drawerHeight, rivers } = props;
@@ -50,7 +74,20 @@ function PlantMap(props) {
           key={plant.id}
           title={plant.name}
           position={plant.coords}
-          icon={plant.id === currentPlantId ? SELECTED_ICON : NORMAL_ICON}
+          icon={
+            plant.id === currentPlantId
+              ? new Leaflet.DivIcon.SVGIcon.IndicatorIcon({
+                  ...ICON_OPTIONS,
+                  color: 'red',
+                  loadRate: plantRatio(plant),
+                  notif: hasNotif(plant),
+                })
+              : new Leaflet.DivIcon.SVGIcon.IndicatorIcon({
+                  ...ICON_OPTIONS,
+                  loadRate: plantRatio(plant),
+                  notif: hasNotif(plant),
+                })
+          }
           onClick={() => onPlantClick(plant)}
         />
       ))}

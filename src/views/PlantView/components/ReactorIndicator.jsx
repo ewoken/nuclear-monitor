@@ -15,6 +15,7 @@ function StatusIndicator(props) {
           style={{ ...style, color: '#404040' }}
         />
       );
+    case 'UNPLANNED_REDUCTION':
     case 'AUTO_STOP':
       return (
         <Icon
@@ -24,7 +25,7 @@ function StatusIndicator(props) {
           style={style}
         />
       );
-    case 'LIMITED':
+    case 'PLANNED_REDUCTION':
       return <Icon type="info-circle" theme="twoTone" style={style} />;
     default:
       return null;

@@ -65,13 +65,16 @@ export function reactorsLoadedSelector(state) {
 
 function getStatus(unavailability) {
   if (unavailability) {
-    if (unavailability.availablePower_MW === 0) {
-      if (unavailability.type === 'PLANNED_MAINTENANCE') {
+    if (unavailability.type === 'PLANNED_MAINTENANCE') {
+      if (unavailability.availablePower_MW === 0) {
         return 'PLANNED_STOP';
       }
+      return 'PLANNED_REDUCTION';
+    }
+    if (unavailability.availablePower_MW === 0) {
       return 'AUTO_STOP';
     }
-    return 'LIMITED';
+    return 'UNPLANNED_REDUCTION';
   }
   return 'RUNNING';
 }
@@ -153,6 +156,12 @@ export function reactorByPlantAndIndexSelector(
       reactor.plantId === plantId && reactor.reactorIndex === reactorIndex,
   );
   return reacto && reactorSelector(reacto.eicCode, state);
+}
+
+export function reactorsOfPlant(plantId, state) {
+  return Object.values(state.reactors.data)
+    .filter(r => r.plantId === plantId)
+    .map(r => reactorSelector(r.eicCode, state));
 }
 
 export default reactorsReducer;

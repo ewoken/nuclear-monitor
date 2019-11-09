@@ -2,6 +2,8 @@ import { values, indexBy, prop } from 'ramda';
 
 import { getPlants } from '../api';
 
+import { reactorsOfPlantSelector } from './reactors';
+
 export const PLANTS_LOAD_ACTION = 'PLANTS_LOAD_ACTION';
 export const PLANTS_RECEIVE_ACTION = 'PLANTS_RECEIVE_ACTION';
 
@@ -60,12 +62,15 @@ export function plantsLoadedSelector(state) {
   return state.plants.loaded;
 }
 
-export function plantsSelector(state) {
-  return values(state.plants.data);
+export function plantSelector(plantId, state) {
+  return {
+    ...state.plants.data[plantId],
+    reactors: reactorsOfPlantSelector(plantId, state),
+  };
 }
 
-export function plantSelector(plantId, state) {
-  return state.plants.data[plantId];
+export function plantsSelector(state) {
+  return values(state.plants.data).map(plant => plantSelector(plant.id, state));
 }
 
 export default plantsReducer;

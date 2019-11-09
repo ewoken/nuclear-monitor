@@ -66,7 +66,9 @@ export function productionsSelector(state) {
 }
 
 export function productionSelector(eicCode, state) {
-  return state.productions.data[eicCode].values;
+  return (
+    state.productions.data[eicCode] && state.productions.data[eicCode].values
+  );
 }
 
 export default productionsReducer;
