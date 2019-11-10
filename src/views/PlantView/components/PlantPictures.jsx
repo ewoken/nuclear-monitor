@@ -20,12 +20,7 @@ function PlantPictures(props) {
 
       <Carousel>
         {plant.pictures.map(picture => (
-          <img
-            key={picture}
-            alt={plant.name}
-            src={picture}
-            style={{ height: 200 }}
-          />
+          <img key={picture} alt={plant.name} src={picture} />
         ))}
       </Carousel>
     </div>

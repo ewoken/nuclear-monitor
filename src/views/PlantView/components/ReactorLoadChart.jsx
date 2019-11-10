@@ -16,7 +16,9 @@ function ReactorLoadChart(props) {
   const endOfDay = Array.from({
     length: 24 - reactor.dayProductions.length + 1,
   }).map(() => ({ value: null }));
-  const data = reactor.dayProductions.concat(endOfDay);
+  const data = reactor.dayProductions
+    .map(d => ({ value: Math.max(d.value, 0) }))
+    .concat(endOfDay);
 
   return (
     <div key={reactor.name} className="ReactorLoadChart">
