@@ -1,6 +1,10 @@
 const fs = require('fs');
 const { readCSV } = require('../helpers');
 
+const plantPictures = readCSV(
+  fs.readFileSync('./data/plantPictures.csv', 'utf8'),
+);
+
 const plants = readCSV(fs.readFileSync('./data/plants.csv', 'utf8')).map(
   plantData => ({
     id: plantData.id,
@@ -11,6 +15,9 @@ const plants = readCSV(fs.readFileSync('./data/plants.csv', 'utf8')).map(
     hasCoolingTower: plantData.hasCoolingTower === 'TRUE',
     wikiLink: plantData.wikiLink,
     asnLink: plantData.asnLink,
+    pictures: plantPictures
+      .filter(p => p.plantId === plantData.id)
+      .map(p => p.url),
   }),
 );
 
