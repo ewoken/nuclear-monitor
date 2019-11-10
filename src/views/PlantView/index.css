@@ -5,15 +5,15 @@
 .PlantView__firstRow {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .PlantView__wiki {
-  height: 20px;
-  margin: 0px 5px 0px 0px;
+  height: 10px;
 }
 
 .PlantView__asn {
-  height: 20px;
+  height: 10px;
 }
 
 .PlantView__schema {
@@ -100,4 +100,18 @@
   margin-left: -20px;
   height: 200px;
   width: 100%;
+}
+
+.PlantPictures {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.PlantPictures__header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.PlantPictures .slick-track {
+  background: black;
 }

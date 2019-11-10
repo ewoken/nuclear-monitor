@@ -8,7 +8,7 @@ import {
   Link,
   Redirect,
 } from 'react-router-dom';
-import { Row, Col, Select, Tag } from 'antd';
+import { Row, Col, Select, Tag, Dropdown, Menu, Button } from 'antd';
 
 import { plantSelector, plantsSelector } from '../../store/plants';
 import { PlantType, ReactorType } from '../../utils/types';
@@ -18,6 +18,7 @@ import {
   reactorByPlantAndIndexSelector,
 } from '../../store/reactors';
 import ReactorDetails from './components/ReactorDetails';
+import PlantPictures from './components/PlantPictures';
 
 import './index.css';
 
@@ -32,6 +33,25 @@ const ReactorDetailsContainer = connect((state, props) => {
     ),
   };
 })(ReactorDetails);
+
+function plantMenu(plant) {
+  return (
+    <Menu>
+      <Menu.Item>
+        <a href={plant.wikiLink} target="_blank" rel="noopener noreferrer">
+          {/* <img className="PlantView__wiki" src="wiki.svg" alt="wiki" /> */}
+          Wikipedia
+        </a>
+      </Menu.Item>
+      <Menu.Item>
+        <a href={plant.asnLink} target="_blank" rel="noopener noreferrer">
+          {/* <img className="PlantView__asn" src="logo-asn.png" alt="asn" /> */}
+          ASN
+        </a>
+      </Menu.Item>
+    </Menu>
+  );
+}
 
 function PlantView(props) {
   const { plants, currentPlant, reactors, goTo } = props;
@@ -65,20 +85,16 @@ function PlantView(props) {
               </span>
             </div>
             <div className="PlantView__firstRow__right">
-              <a
-                href={currentPlant.wikiLink}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link to={`/plant/${currentPlant.id}/pictures`}>
+                <Button icon="picture" style={{ marginRight: 5 }} />
+              </Link>
+              <Dropdown
+                overlay={plantMenu(currentPlant)}
+                trigger={['click']}
+                placement="bottomRight"
               >
-                <img className="PlantView__wiki" src="wiki.svg" alt="wiki" />
-              </a>
-              <a
-                href={currentPlant.asnLink}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <img className="PlantView__asn" src="logo-asn.png" alt="asn" />
-              </a>
+                <Button icon="more" />
+              </Dropdown>
             </div>
           </div>
 
@@ -103,6 +119,10 @@ function PlantView(props) {
           </div>
           <div className="PlantView__footer">
             <Switch>
+              <Route
+                path="/plant/:plantId/pictures"
+                component={() => <PlantPictures plant={currentPlant} />}
+              />
               <Route
                 path="/plant/:plantId/:reactorIndex"
                 component={ReactorDetailsContainer}

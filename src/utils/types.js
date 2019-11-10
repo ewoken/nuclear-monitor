@@ -16,6 +16,7 @@ export const PlantType = PropTypes.shape({
   hasCoolingTower: PropTypes.bool.isRequired,
   wikiLink: PropTypes.string.isRequired,
   asnLink: PropTypes.string.isRequired,
+  pictures: PropTypes.arrayOf(PropTypes.string).isRequired,
 });
 
 export const ReactorType = PropTypes.shape({
