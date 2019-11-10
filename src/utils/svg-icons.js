@@ -232,7 +232,6 @@ L.DivIcon.SVGIcon.IndicatorIcon = L.DivIcon.SVGIcon.extend({
         >
         </circle>`;
 
-      console.log(this.options.notif)
       return this.options.notif ? circle + pie + notif : circle + pie;
   },
 
