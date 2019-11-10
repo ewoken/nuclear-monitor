@@ -1,4 +1,4 @@
-const { assocPath } = require('ramda');
+const { assocPath, splitEvery } = require('ramda');
 const { ValidationError } = require('./errors');
 
 function normalizePort(port) {
@@ -55,6 +55,16 @@ function retryWrapper(f, { retryInterval, retryCount, name = '' }) {
   };
 }
 
+function chunkAndChainPromises(data, dataToPromiseFn, chunkSize) {
+  return splitEvery(chunkSize, data).reduce((last, items) => {
+    return last.then(array => {
+      return Promise.all(items.map(dataToPromiseFn)).then(values => {
+        return array.concat(values);
+      });
+    });
+  }, Promise.resolve([]));
+}
+
 /*
  * Encapsulate Joi https://github.com/hapijs/joi/blob/v13.0.2/API.md
  */
@@ -75,10 +85,19 @@ function assertInput(schema, inputValue) {
   return value;
 }
 
+function formatMongoObject(object) {
+  return {
+    ...object,
+    _id: object._id.toString(), // eslint-disable-line no-underscore-dangle
+  };
+}
+
 module.exports = {
   normalizePort,
   readCSV,
   setTimeoutPromise,
   retryWrapper,
   assertInput,
+  chunkAndChainPromises,
+  formatMongoObject,
 };

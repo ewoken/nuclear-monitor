@@ -3,5 +3,9 @@
     "host": "HOST",
     "port": "PORT"
   },
+  "mongoDb": {
+    "uri": "MONGO_URI",
+    "dbName": "MONGO_DBNAME"
+  },
   "RTE_API_KEY": "RTE_API_KEY"
 }

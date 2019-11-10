@@ -1,5 +1,6 @@
 const enableDestroy = require('server-destroy');
 const config = require('config');
+const { MongoClient } = require('mongodb');
 
 const logger = require('./src/utils/logger');
 const MemoryCache = require('./src/utils/MemoryCache');
@@ -9,13 +10,20 @@ const { buildApi } = require('./src/api');
 const { fetchToken } = require('./src/rteApi');
 const { initJobs, killJobs } = require('./src/jobs');
 
+const uri = config.get('mongoDb.uri');
+const dbName = config.get('mongoDb.dbName');
+
 async function launchApp() {
   const rteToken = await fetchToken();
+  const mongoClient = await MongoClient.connect(uri, {
+    useUnifiedTopology: true,
+  });
 
   const environment = {
     logger,
     rteToken,
     cache: new MemoryCache(logger),
+    db: mongoClient.db(dbName),
   };
 
   initJobs(environment);
@@ -28,6 +36,7 @@ async function launchApp() {
   enableDestroy(server);
 
   server.on('close', () => {
+    mongoClient.close();
     killJobs(environment);
     logger.info('Server closed');
   });
