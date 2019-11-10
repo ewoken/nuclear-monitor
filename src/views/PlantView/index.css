@@ -90,3 +90,14 @@
   display: flex;
   justify-content: space-between;
 }
+
+.ReactorLoadChart {
+  margin-top: 10px;
+}
+
+.ReactorLoadChart__chart {
+  margin-top: 5px;
+  margin-left: -20px;
+  height: 200px;
+  width: 100%;
+}

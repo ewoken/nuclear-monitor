@@ -6,6 +6,21 @@ import moment from 'moment-timezone';
 
 import { ReactorType } from '../../../utils/types';
 
+import ReactorLoadChart from './ReactorLoadChart';
+
+function shouldDisplayLoadGraph(reactor) {
+  if (!reactor.unavailability) {
+    return true;
+  }
+  const startDate = moment(reactor.unavailability.startDate);
+
+  return (
+    reactor.unavailability.availablePower_MW > 0 ||
+    startDate.isAfter(moment().startOf('day')) ||
+    moment().diff(startDate, 'hours') < 6
+  );
+}
+
 function ReactorDetails({ reactor }) {
   return (
     <div className="ReactorDetails">
@@ -32,6 +47,10 @@ function ReactorDetails({ reactor }) {
           {`${reactor.power_MW} MWe (${reactor.stage})`}
         </Descriptions.Item>
       </Descriptions>
+
+      {shouldDisplayLoadGraph(reactor) && (
+        <ReactorLoadChart reactor={reactor} />
+      )}
 
       {reactor.unavailability && (
         <Descriptions
