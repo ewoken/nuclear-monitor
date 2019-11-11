@@ -5,6 +5,7 @@ const logger = require('./logger');
 const { normalizePort } = require('./helpers');
 const { buildApi } = require('./api');
 const { fetchToken } = require('./rteApi');
+const { initJobs, killJobs } = require('./jobs');
 
 async function launchApp() {
   const rteToken = await fetchToken();
@@ -13,6 +14,8 @@ async function launchApp() {
     logger,
     rteToken,
   };
+
+  initJobs(environment);
   const app = buildApi(environment);
 
   const port = normalizePort(config.get('server.port'));
@@ -22,6 +25,7 @@ async function launchApp() {
   enableDestroy(server);
 
   server.on('close', () => {
+    killJobs(environment);
     logger.info('Server closed');
   });
 

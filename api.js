@@ -8,6 +8,7 @@ const compression = require('compression');
 const helmet = require('helmet');
 
 const { plants: PLANTS, reactors: REACTORS } = require('./data');
+const { RTEServiceError } = require('./rteApi');
 
 const {
   errorHandlerMiddleware,
@@ -24,6 +25,12 @@ function serviceWrapper(service, environment) {
       const data = await service(environment);
       res.json(data);
     } catch (err) {
+      if (err instanceof RTEServiceError) {
+        res.statusCode = 500;
+        res.json(err.toObject());
+        return;
+      }
+
       next(err);
     }
   };
@@ -54,6 +61,12 @@ function buildApi(environment) {
     '/unavailabilities',
     serviceWrapper(getUnavailabilities, environment),
   );
+
+  if (process.env.NODE_ENV !== 'production') {
+    app.get('/token', (req, res) => {
+      res.json({ token: environment.rteToken });
+    });
+  }
 
   app.use(notFoundMiddleware());
   app.use(errorHandlerMiddleware(logger));
