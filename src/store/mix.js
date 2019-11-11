@@ -24,7 +24,7 @@ export function loadAllMix() {
       )
       .catch(
         errors =>
-          console.error(errors) && dispatch(receiveMixAction({ errors })),
+          console.error(errors) || dispatch(receiveMixAction({ errors })),
       );
   };
 }

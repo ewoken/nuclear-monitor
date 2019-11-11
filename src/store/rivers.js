@@ -24,7 +24,7 @@ export function loadAllRivers() {
       )
       .catch(
         errors =>
-          console.error(errors) && dispatch(receiveRiversAction({ errors })),
+          console.error(errors) || dispatch(receiveRiversAction({ errors })),
       );
   };
 }

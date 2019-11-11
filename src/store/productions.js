@@ -26,7 +26,7 @@ export function loadAllProductions() {
       )
       .catch(
         errors =>
-          console.error(errors) &&
+          console.error(errors) ||
           dispatch(receiveProductionsAction({ errors })),
       );
   };
@@ -59,6 +59,10 @@ function productionsReducer(state = initialState, action) {
 
 export function productionsLoadedSelector(state) {
   return state.productions.loaded;
+}
+
+export function productionsErrorSelector(state) {
+  return state.productions.errors;
 }
 
 export function productionsSelector(state) {

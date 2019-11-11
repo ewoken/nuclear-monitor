@@ -3,6 +3,15 @@ import qs from 'qs';
 
 const { REACT_APP_NUCLEAR_MONITOR_API } = process.env;
 
+async function doFetch(...args) {
+  const res = await fetch(...args);
+
+  if (!res.ok) {
+    throw new Error('Fetch error');
+  }
+  return res;
+}
+
 export async function getRivers() {
   return Promise.all(
     ['garonne', 'loire', 'meuse', 'moselle', 'rhin', 'rhone', 'seine'].map(
@@ -12,28 +21,30 @@ export async function getRivers() {
 }
 
 export async function getPlants() {
-  const res = await fetch(`${REACT_APP_NUCLEAR_MONITOR_API}/plants`);
+  const res = await doFetch(`${REACT_APP_NUCLEAR_MONITOR_API}/plants`);
   const data = await res.json();
 
   return data;
 }
 
 export async function getReactors() {
-  const res = await fetch(`${REACT_APP_NUCLEAR_MONITOR_API}/reactors`);
+  const res = await doFetch(`${REACT_APP_NUCLEAR_MONITOR_API}/reactors`);
   const data = await res.json();
 
   return data;
 }
 
 export async function getProductions() {
-  const res = await fetch(`${REACT_APP_NUCLEAR_MONITOR_API}/productions`);
+  const res = await doFetch(`${REACT_APP_NUCLEAR_MONITOR_API}/productions`);
   const data = await res.json();
 
   return data;
 }
 
 export async function getUnavailabilities() {
-  const res = await fetch(`${REACT_APP_NUCLEAR_MONITOR_API}/unavailabilities`);
+  const res = await doFetch(
+    `${REACT_APP_NUCLEAR_MONITOR_API}/unavailabilities`,
+  );
   const data = await res.json();
 
   return data;

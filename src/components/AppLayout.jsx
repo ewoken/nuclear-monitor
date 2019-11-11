@@ -26,6 +26,7 @@ import { loadAllReactors, reactorsLoadedSelector } from '../store/reactors';
 import {
   loadAllProductions,
   productionsLoadedSelector,
+  productionsErrorSelector,
 } from '../store/productions';
 import { loadAllMix, mixLoadedSelector } from '../store/mix';
 
@@ -40,6 +41,7 @@ import PlantMap from './PlantMap';
 import {
   loadAllUnavailabilities,
   unavailabilitiesLoadedSelector,
+  unavailabilitiesErrorSelector,
 } from '../store/unavailabilities';
 import {
   loadAllRivers,
@@ -56,7 +58,15 @@ const UnavailabilitiesLoader = buildLoader(loadAllUnavailabilities);
 const RiversLoader = buildLoader(loadAllRivers);
 
 function AppLayout(props) {
-  const { isLoaded, plants, goTo, currentPlantId, isFullPage, rivers } = props;
+  const {
+    isLoaded,
+    plants,
+    goTo,
+    currentPlantId,
+    isFullPage,
+    rivers,
+    error,
+  } = props;
   const isSmallScreen = !testScreenType('sm');
   const drawerHeight = isFullPage ? getWindowHeight() - HEADER_HEIGHT : 220;
 
@@ -79,6 +89,11 @@ function AppLayout(props) {
               src="loading_icon.svg"
               alt=""
             />
+            {error && (
+              <div className="AppLayout__errorMessage">
+                Une erreur est survenue, veuillez essayer dans quelques minutes
+              </div>
+            )}
           </div>
         }
       >
@@ -152,10 +167,13 @@ AppLayout.propTypes = {
   currentPlantId: PropTypes.string,
   // eslint-disable-next-line react/forbid-prop-types
   rivers: PropTypes.array.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  error: PropTypes.object,
 };
 
 AppLayout.defaultProps = {
   currentPlantId: null,
+  error: null,
 };
 
 // withRouter needed to prevent blocking
@@ -165,6 +183,9 @@ export default withRouter(
       path: '/plant/:id',
       exact: false,
     });
+    const prodError = productionsErrorSelector(state);
+    const unavailabilitiesError = unavailabilitiesErrorSelector(state);
+
     return {
       isLoaded:
         plantsLoadedSelector(state) &&
@@ -180,6 +201,7 @@ export default withRouter(
       isFullPage: !!matchPath(props.location.pathname, {
         path: ['/plant/:id/:reactorIndex', '/mix'],
       }),
+      error: prodError || unavailabilitiesError,
     };
   })(AppLayout),
 );

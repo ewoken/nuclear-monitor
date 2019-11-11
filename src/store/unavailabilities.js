@@ -27,7 +27,7 @@ export function loadAllUnavailabilities() {
       )
       .catch(
         errors =>
-          console.error(errors) &&
+          console.error(errors) ||
           dispatch(receiveUnavailabilitiesAction({ errors })),
       );
   };
@@ -60,6 +60,10 @@ function unavailabilitiesReducer(state = initialState, action) {
 
 export function unavailabilitiesLoadedSelector(state) {
   return state.unavailabilities.loaded;
+}
+
+export function unavailabilitiesErrorSelector(state) {
+  return state.productions.errors;
 }
 
 export function unavailabilitiesSelector(state) {

@@ -44,14 +44,25 @@ body {
 .AppLayout__loadingIcon {
   height: 100px !important;
   width: 100px !important;
-  margin-left: -50px !important;
   -webkit-animation:spin 4s linear infinite;
   -moz-animation:spin 4s linear infinite;
   animation: spin 4s linear infinite;
+  position: fixed;
+  top: calc(50% - 50px);
+  left: calc(50% - 50px);
 }
 @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
 @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+.AppLayout__errorMessage {
+  width: 50%;
+  color: black;
+  font-size: 12pt;
+  position: fixed;
+  bottom: 100px;
+  left: 25%;
+}
 
 .AppLayout__header.ant-layout-header {
   position: fixed;

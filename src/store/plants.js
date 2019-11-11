@@ -28,7 +28,7 @@ export function loadAllPlants() {
       )
       .catch(
         errors =>
-          console.error(errors) && dispatch(receivePlantsAction({ errors })),
+          console.error(errors) || dispatch(receivePlantsAction({ errors })),
       );
   };
 }

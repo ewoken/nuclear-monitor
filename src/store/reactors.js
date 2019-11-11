@@ -29,7 +29,7 @@ export function loadAllReactors() {
       )
       .catch(
         errors =>
-          console.error(errors) && dispatch(receiveReactorsAction({ errors })),
+          console.error(errors) || dispatch(receiveReactorsAction({ errors })),
       );
   };
 }
