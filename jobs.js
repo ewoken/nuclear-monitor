@@ -16,9 +16,8 @@ async function updateRteToken(environment) {
 }
 
 const HOST = config.get('server.host');
-const PORT = config.get('server.port');
 async function keepAlive() {
-  await fetch(`${HOST}:${PORT}/_status`);
+  await fetch(`${HOST}/_status`);
 }
 
 const UPDATE_INTERVAL = 10 * 60 * 1000; // 10 min
