@@ -68,6 +68,10 @@ function buildApi(environment) {
     });
   }
 
+  app.get('/_status', (req, res) => {
+    res.json({ status: 'OK' });
+  });
+
   app.use(notFoundMiddleware());
   app.use(errorHandlerMiddleware(logger));
 

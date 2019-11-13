@@ -1,3 +1,6 @@
+const fetch = require('node-fetch');
+const config = require('config');
+
 const { fetchToken } = require('./rteApi');
 
 async function updateRteToken(environment) {
@@ -12,6 +15,12 @@ async function updateRteToken(environment) {
   environment.rteToken = newToken;
 }
 
+const HOST = config.get('server.host');
+const PORT = config.get('server.port');
+async function keepAlive() {
+  await fetch(`${HOST}:${PORT}/_status`);
+}
+
 const UPDATE_INTERVAL = 10 * 60 * 1000; // 10 min
 
 function initJobs(environment) {
@@ -20,7 +29,9 @@ function initJobs(environment) {
     UPDATE_INTERVAL,
   );
 
-  const jobIds = [updateTokenId];
+  const keepAliveId = setInterval(() => keepAlive(), 30 * 1000);
+
+  const jobIds = [updateTokenId, keepAliveId];
 
   // eslint-disable-next-line no-param-reassign
   environment.jobIds = jobIds;
