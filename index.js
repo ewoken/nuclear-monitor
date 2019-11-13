@@ -1,6 +1,8 @@
 const enableDestroy = require('server-destroy');
 const config = require('config');
 
+require('newrelic');
+
 const logger = require('./logger');
 const { normalizePort } = require('./helpers');
 const { buildApi } = require('./api');
