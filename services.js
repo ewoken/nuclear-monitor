@@ -3,7 +3,16 @@ const { uniqBy } = require('ramda');
 
 const { getRessource, DATE_FORMAT } = require('./rteApi');
 
-async function getProductions({ rteToken }) {
+let cache = {};
+async function getProductions({ rteToken, logger }) {
+  const key = `PROD${moment().format('YYYYMMDDHH')}`;
+
+  if (cache[key]) {
+    logger.info('getProductions: cache HIT');
+    return cache[key];
+  }
+  cache = {};
+
   const data = await getRessource({
     ressource: 'actual_generation/v1/actual_generations_per_unit',
     token: rteToken,
@@ -20,6 +29,8 @@ async function getProductions({ rteToken }) {
         value: value.value,
       })),
     }));
+
+  cache[key] = productions;
 
   return productions;
 }
