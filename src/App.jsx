@@ -1,10 +1,14 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { HashRouter as Router, Route } from 'react-router-dom';
+import moment from 'moment';
+import 'moment/locale/fr';
 
 import store from './store';
 
 import AppLayout from './components/AppLayout';
+
+moment.locale('fr');
 
 function App() {
   return (

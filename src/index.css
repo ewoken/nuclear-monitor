@@ -71,6 +71,20 @@ body {
   padding: 0 0px;
 }
 
+.AppLayout__header__date {
+  height: 100%;
+  color: rgba(255, 255, 255, 0.65);
+  position: absolute;
+  top: 0;
+  right: 20px;
+  line-height: initial;
+  font-size: 8pt;
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  justify-content: center;
+}
+
 .HomeView {
   padding: 15px;
 }

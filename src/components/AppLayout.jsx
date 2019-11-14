@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+import moment from 'moment';
+
 import {
   Route, // as BaseRoute,
   Switch,
@@ -146,6 +148,10 @@ function AppLayout(props) {
                       </Menu.Item>
                     </Menu.SubMenu>
                   </Menu>
+                  <div className="AppLayout__header__date">
+                    <div>{moment().format('dddd DD/MM/YYYY')}</div>
+                    <div>{moment().format('à HH:00')}</div>
+                  </div>
                 </Layout.Header>
 
                 <Layout.Content className="AppLayout__content">
