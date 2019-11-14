@@ -35,7 +35,7 @@ function MixView(props) {
   const date = moment()
     .tz('Europe/Paris')
     .hour(Math.floor(slotIndex / 4))
-    .minutes(15 * (slotIndex % 4))
+    .minutes(15 * ((slotIndex % 4) + 1))
     .format('DD/MM/YYYY HH:mm');
 
   return (
@@ -103,15 +103,17 @@ MixView.propTypes = {
   }).isRequired,
 };
 
-const withStateEnhancer = withState('slotIndex', 'setSlotIndex', () =>
-  Math.max(
-    Math.floor(moment().diff(moment().startOf('day'), 'minutes') / 15) - 8,
-    0,
-  ),
+const withStateEnhancer = withState(
+  'slotIndex',
+  'setSlotIndex',
+  props => props.mix.filter(d => !Number.isNaN(d.nuclear)).length - 1,
 );
 
-const connectEnhancer = connect((state, props) => ({
+const mixEnhancer = connect(state => ({
   mix: mixSelector(state),
+}));
+
+const indicatorsEnhancer = connect((state, props) => ({
   reactorSetIndicators: reactorSetIndicatorsSelector(
     Math.floor(props.slotIndex / 4),
     state,
@@ -119,6 +121,7 @@ const connectEnhancer = connect((state, props) => ({
 }));
 
 export default compose(
+  mixEnhancer,
   withStateEnhancer,
-  connectEnhancer,
+  indicatorsEnhancer,
 )(MixView);

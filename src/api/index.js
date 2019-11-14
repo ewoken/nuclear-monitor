@@ -1,5 +1,4 @@
-import moment from 'moment-timezone';
-import qs from 'qs';
+import { map } from 'ramda';
 
 const { REACT_APP_NUCLEAR_MONITOR_API } = process.env;
 
@@ -15,7 +14,10 @@ async function doFetch(...args) {
 export async function getRivers() {
   return Promise.all(
     ['garonne', 'loire', 'meuse', 'moselle', 'rhin', 'rhone', 'seine'].map(
-      river => fetch(`./rivers/${river}.json`).then(res => res.json()),
+      river =>
+        fetch(`./rivers/${river}.json`)
+          .then(res => res.json())
+          .then(res => ({ ...res, name: river })),
     ),
   );
 }
@@ -50,38 +52,17 @@ export async function getUnavailabilities() {
   return data;
 }
 
-const START_URL =
-  'https://opendata.reseaux-energies.fr/api/records/1.0/search/?';
-const DATE_FORMAT = 'YYYY-MM-DD';
 export async function getMix() {
-  const res = await fetch(
-    `${START_URL}${qs.stringify({
-      dataset: 'eco2mix-national-tr',
-      rows: 96,
-      sort: '-date_heure',
-      'refine.date': moment()
-        .tz('Europe/Paris')
-        .format(DATE_FORMAT),
-    })}`,
-  );
+  const res = await doFetch(`${REACT_APP_NUCLEAR_MONITOR_API}/mix`);
   const data = await res.json();
 
-  const mix = data.records.map(({ fields }) => ({
-    isOk: !!fields.nucleaire,
-    datetime: moment(fields.date_heure).unix(),
-    wind: Number(fields.eolien),
-    solar: Number(fields.solaire),
-    nuclear: Number(fields.nucleaire),
-    gas: Number(fields.gaz),
-    oil: Number(fields.fioul),
-    coal: Number(fields.charbon),
-    consumption: Number(fields.consommation),
-    biomass: Number(fields.bioenergies),
-    hydroPumped: Number(fields.pompage),
-    hydro: Number(fields.hydraulique),
-    imports: Math.max(0, Number(fields.ech_physiques)),
-    exports: Math.min(0, Number(fields.ech_physiques)),
-  }));
+  if (data.length < 1) {
+    return [];
+  }
 
-  return mix;
+  const rest = Array.from({ length: 24 * 4 - data.length }).map(() =>
+    map(() => NaN, data[0]),
+  );
+
+  return data.concat(rest);
 }

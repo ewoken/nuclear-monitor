@@ -4,7 +4,7 @@ export const META = {
     color: '#114774',
     stackId: '2',
   },
-  biomass: {
+  bioenergy: {
     label: 'BIOENERG.',
     color: '#166a57',
   },
@@ -50,7 +50,7 @@ export const META = {
 export const GRAPH_ORDER = [
   'hydroPumped',
   'exports',
-  'biomass',
+  'bioenergy',
   'nuclear',
   'hydro',
   'gas',
@@ -69,6 +69,18 @@ export const HEADER_ORDER = [
   'nuclear',
   'solar',
   'wind',
-  'biomass',
+  'bioenergy',
   'hydroPumped',
 ];
+
+export const EMISSION_FACTORS = {
+  bioenergy: 230,
+  nuclear: 6,
+  hydro: 6,
+  gas: 418,
+  coal: 1060,
+  oil: 730,
+  wind: 14.1,
+  solar: 55,
+  imports: 400,
+};

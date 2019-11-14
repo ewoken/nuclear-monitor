@@ -16,11 +16,25 @@ import {
 
 import { MixType } from '../../../utils/types';
 
-import { META, HEADER_ORDER, GRAPH_ORDER } from './config';
+import { META, HEADER_ORDER, GRAPH_ORDER, EMISSION_FACTORS } from './config';
 
 function format(v) {
   // eslint-disable-next-line no-restricted-globals
   return isNaN(v) ? '-' : `${v}`;
+}
+
+function computeCo2(mix) {
+  const a = Object.keys(EMISSION_FACTORS).reduce(
+    (sum, key) => ({
+      e: sum.e + mix[key] * EMISSION_FACTORS[key],
+      total: sum.total + mix[key],
+    }),
+    {
+      e: 0,
+      total: 0,
+    },
+  );
+  return a.e / a.total;
 }
 
 function MixComponent({ mix, slotIndex, setSlotIndex }) {
@@ -58,7 +72,7 @@ function MixComponent({ mix, slotIndex, setSlotIndex }) {
               : META.imports.label}
           </span>
         </div>
-        <div className="MixComponent__header__item" />
+        {/* <div className="MixComponent__header__item" /> */}
         <div
           className="MixComponent__header__item"
           style={{ backgroundColor: 'black' }}
@@ -67,6 +81,13 @@ function MixComponent({ mix, slotIndex, setSlotIndex }) {
           <span className="MixComponent__header__item__small"> MW</span>
           <br />
           <span className="MixComponent__header__item__small">CONSO</span>
+        </div>
+        <div className="MixComponent__header__item" style={{ color: 'black' }}>
+          {format(Math.ceil(computeCo2(mix[slotIndex])))}
+          <br />
+          <span className="MixComponent__header__item__small">gCO₂eq/kWh</span>
+          {/* <br />
+          <span className="MixComponent__header__item__small">EMISSIONS</span> */}
         </div>
       </div>
 
@@ -108,7 +129,7 @@ function MixComponent({ mix, slotIndex, setSlotIndex }) {
             value =>
               moment()
                 .startOf('day')
-                .add(value * 15, 'minutes')
+                .add((value + 1) * 15, 'minutes')
                 .format('HH:mm')
             // eslint-disable-next-line react/jsx-curly-newline
           }

@@ -33,8 +33,6 @@ export const ReactorType = PropTypes.shape({
 });
 
 export const MixType = PropTypes.shape({
-  isOk: PropTypes.bool.isRequired,
-  datetime: PropTypes.number.isRequired,
   wind: PropTypes.number.isRequired,
   solar: PropTypes.number.isRequired,
   nuclear: PropTypes.number.isRequired,

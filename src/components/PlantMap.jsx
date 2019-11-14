@@ -92,7 +92,7 @@ function PlantMap(props) {
         />
       ))}
       {rivers.map(river => (
-        <GeoJSON data={river} />
+        <GeoJSON key={river.name} data={river} />
       ))}
     </Map>
   );
