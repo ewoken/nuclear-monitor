@@ -10,8 +10,10 @@ import {
   Link,
   matchPath,
 } from 'react-router-dom';
-import { Layout, Spin, Row, Col, Drawer, Menu } from 'antd';
+import { Layout, Spin, Row, Col, Drawer, Menu, Icon } from 'antd';
 
+import HomeView from '../views/HomeView';
+import AboutView from '../views/AboutView';
 import MixView from '../views/MixView';
 import PlantView from '../views/PlantView';
 
@@ -48,7 +50,6 @@ import {
   riversLoadedSelector,
   riversSelector,
 } from '../store/rivers';
-import HomeView from '../views/HomeView';
 
 const PlantsLoader = buildLoader(loadAllPlants);
 const ReactorsLoader = buildLoader(loadAllReactors);
@@ -115,6 +116,7 @@ function AppLayout(props) {
               <Switch>
                 <Route path="/home" exact component={HomeView} />
                 <Route path="/mix" exact component={MixView} />
+                <Route path="/about" exact component={AboutView} />
                 <Route path="/plant/:plantId" component={PlantView} />
                 <Route
                   component={() => <Redirect to={{ pathname: '/home' }} />}
@@ -135,9 +137,14 @@ function AppLayout(props) {
                         <strong>Nuclear monitor</strong>
                       </Link>
                     </Menu.Item>
-                    <Menu.Item key="mix">
-                      <Link to="/mix">Mix</Link>
-                    </Menu.Item>
+                    <Menu.SubMenu title={<Icon type="menu" />}>
+                      <Menu.Item key="mix">
+                        <Link to="/mix">Mix</Link>
+                      </Menu.Item>
+                      <Menu.Item key="about">
+                        <Link to="/about">À propos</Link>
+                      </Menu.Item>
+                    </Menu.SubMenu>
                   </Menu>
                 </Layout.Header>
 
