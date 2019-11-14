@@ -8,17 +8,8 @@ function Content() {
   return (
     <div>
       <p>
-        {'Ce site est développé par '}
-        <a
-          href="https://github.com/ewoken"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          ewoken
-        </a>
-        .
+        {'Ce site est open-source, vous pouvez consulter son code source ici: '}
         <br />
-        {'Open-source, vous pouvez consulter le code source ici: '}
         <a
           href="https://github.com/ewoken/nuclear-monitor"
           target="_blank"
@@ -30,7 +21,9 @@ function Content() {
       </p>
 
       <p>
-        {'Vous pouvez aussi me suivre sur Twitter: '}
+        {
+          "N'hésitez pas à me remontez des bugs ou suggestions sur Github ou Twitter:"
+        }
         <br />
         <a
           href="https://twitter.com/Yugnat95"

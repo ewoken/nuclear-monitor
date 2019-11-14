@@ -1,3 +1,7 @@
 .AboutView {
   padding: 15px;
 }
+
+.AboutView .ant-comment-inner {
+  padding: 0 0;
+}
