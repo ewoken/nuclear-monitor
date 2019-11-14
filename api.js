@@ -17,7 +17,7 @@ const {
   notFoundMiddleware,
 } = require('./middlewares');
 
-const { getProductions, getUnavailabilities } = require('./services');
+const { getProductions, getUnavailabilities, getMix } = require('./services');
 
 function serviceWrapper(service, environment) {
   return async function wrappedService(req, res, next) {
@@ -61,6 +61,7 @@ function buildApi(environment) {
     '/unavailabilities',
     serviceWrapper(getUnavailabilities, environment),
   );
+  app.get('/mix', serviceWrapper(getMix, environment));
 
   if (process.env.NODE_ENV !== 'production') {
     app.get('/token', (req, res) => {

@@ -1,17 +1,17 @@
 const moment = require('moment-timezone');
-const { uniqBy } = require('ramda');
+const { uniqBy, transpose, mergeAll, omit } = require('ramda');
 
 const { getRessource, DATE_FORMAT } = require('./rteApi');
 
-let cache = {};
+let prodCache = {};
 async function getProductions({ rteToken, logger }) {
   const key = `PROD${moment().format('YYYYMMDDHH')}`;
 
-  if (cache[key]) {
+  if (prodCache[key]) {
     logger.info('getProductions: cache HIT');
-    return cache[key];
+    return prodCache[key];
   }
-  cache = {};
+  prodCache = {};
 
   const data = await getRessource({
     ressource: 'actual_generation/v1/actual_generations_per_unit',
@@ -30,7 +30,7 @@ async function getProductions({ rteToken, logger }) {
       })),
     }));
 
-  cache[key] = productions;
+  prodCache[key] = productions;
 
   return productions;
 }
@@ -73,7 +73,90 @@ async function getUnavailabilities({ rteToken }) {
   return res;
 }
 
+let mixCache = {};
+const map = {
+  BIOENERGY: 'bioenergy',
+  EXCHANGE: 'exchange',
+  FOSSIL_GAS: 'gas',
+  FOSSIL_HARD_COAL: 'coal',
+  FOSSIL_OIL: 'oil',
+  HYDRO: 'hydro',
+  NUCLEAR: 'nuclear',
+  WIND: 'wind',
+  SOLAR: 'solar',
+  PUMPING: 'hydroPumped',
+};
+async function getMix({ rteToken, logger }) {
+  const now = moment();
+  const quarter = Math.floor(now.minutes() / 15);
+  const key = `PROD${now.format('YYYYMMDDHH')}-${quarter}`;
+
+  if (mixCache[key]) {
+    logger.info('getMix: cache HIT');
+    return mixCache[key];
+  }
+  mixCache = {};
+
+  const [data, data2] = await Promise.all([
+    getRessource({
+      ressource: 'actual_generation/v1/generation_mix_15min_time_scale',
+      params: {
+        start_date: moment()
+          .tz('Europe/Paris')
+          .startOf('day')
+          .format(DATE_FORMAT),
+        end_date: moment()
+          .tz('Europe/Paris')
+          .startOf('day')
+          .add(1, 'day')
+          .format(DATE_FORMAT),
+      },
+      token: rteToken,
+    }),
+    getRessource({
+      ressource: 'consumption/v1/short_term',
+      params: {
+        type: 'REALISED',
+      },
+      token: rteToken,
+    }),
+  ]);
+
+  const a = data.generation_mix_15min_time_scale
+    .filter(d => d.production_subtype === 'TOTAL')
+    .map(d =>
+      d.values.map(i => ({
+        startDate: i.start_date,
+        endDate: i.end_date,
+        [map[d.production_type]]: i.value,
+      })),
+    );
+  const b = data2.short_term[0].values.map(d => ({
+    startDate: d.start_date,
+    endDate: d.end_date,
+    consumption: d.value,
+  }));
+
+  // remove extra conso values
+  const c = b.length > a[0].length ? b.slice(a[0].length - 1) : b;
+
+  a.push(c);
+
+  const mix = transpose(a)
+    .map(mergeAll)
+    .map(d => ({
+      ...omit(['exchange'])(d),
+      imports: Math.max(0, d.exchange),
+      exports: Math.min(0, d.exchange),
+    }));
+
+  mixCache[key] = mix;
+
+  return mix;
+}
+
 module.exports = {
   getProductions,
   getUnavailabilities,
+  getMix,
 };
