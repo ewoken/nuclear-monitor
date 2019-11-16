@@ -1,11 +1,13 @@
 const enableDestroy = require('server-destroy');
 const config = require('config');
 
-const logger = require('./logger');
-const { normalizePort } = require('./helpers');
-const { buildApi } = require('./api');
-const { fetchToken } = require('./rteApi');
-const { initJobs, killJobs } = require('./jobs');
+const logger = require('./src/utils/logger');
+const MemoryCache = require('./src/utils/MemoryCache');
+
+const { normalizePort } = require('./src/utils/helpers');
+const { buildApi } = require('./src/api');
+const { fetchToken } = require('./src/rteApi');
+const { initJobs, killJobs } = require('./src/jobs');
 
 async function launchApp() {
   const rteToken = await fetchToken();
@@ -13,6 +15,7 @@ async function launchApp() {
   const environment = {
     logger,
     rteToken,
+    cache: new MemoryCache(logger),
   };
 
   initJobs(environment);

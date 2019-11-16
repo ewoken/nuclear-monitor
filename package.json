@@ -44,6 +44,7 @@
     "es6-error": "^4.1.1",
     "express": "^4.17.1",
     "helmet": "^3.21.0",
+    "joi": "^14.3.1",
     "moment-timezone": "^0.5.26",
     "node-fetch": "^2.6.0",
     "on-finished": "^2.3.0",

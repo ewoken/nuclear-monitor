@@ -1,3 +1,6 @@
+const { assocPath } = require('ramda');
+const { ValidationError } = require('./errors');
+
 function normalizePort(port) {
   const normalizedPort = Number(port);
   if (Number.isNaN(port)) {
@@ -52,9 +55,30 @@ function retryWrapper(f, { retryInterval, retryCount, name = '' }) {
   };
 }
 
+/*
+ * Encapsulate Joi https://github.com/hapijs/joi/blob/v13.0.2/API.md
+ */
+
+function transformJoiError(joiError) {
+  return joiError.details.reduce(
+    (acc, detail) => assocPath(detail.path, detail.message, acc),
+    {},
+  );
+}
+
+function assertInput(schema, inputValue) {
+  const { error, value } = schema.validate(inputValue, { abortEarly: false });
+  if (error) {
+    const errors = transformJoiError(error);
+    throw new ValidationError(errors, inputValue);
+  }
+  return value;
+}
+
 module.exports = {
   normalizePort,
   readCSV,
   setTimeoutPromise,
   retryWrapper,
+  assertInput,
 };

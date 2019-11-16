@@ -2,8 +2,8 @@ const fetch = require('node-fetch');
 const qs = require('qs');
 const config = require('config');
 
-const { retryWrapper } = require('./helpers');
-const { DefaultError } = require('./errors');
+const { retryWrapper } = require('./utils/helpers');
+const { DefaultError } = require('./utils/errors');
 
 const RTE_API_KEY = config.get('RTE_API_KEY');
 const RTE_HOST = 'https://digital.iservices.rte-france.com';

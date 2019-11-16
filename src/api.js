@@ -15,14 +15,14 @@ const {
   logRequestMiddleware,
   addRequestIdMiddleware,
   notFoundMiddleware,
-} = require('./middlewares');
+} = require('./utils/middlewares');
 
 const { getProductions, getUnavailabilities, getMix } = require('./services');
 
 function serviceWrapper(service, environment) {
   return async function wrappedService(req, res, next) {
     try {
-      const data = await service(environment);
+      const data = await service(req.query, environment);
       res.json(data);
     } catch (err) {
       if (err instanceof RTEServiceError) {
