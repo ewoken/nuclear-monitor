@@ -9,7 +9,6 @@ import {
   Switch,
   Redirect,
   withRouter,
-  Link,
   matchPath,
 } from 'react-router-dom';
 import { Layout, Spin, Row, Col, Drawer, Menu, Icon } from 'antd';
@@ -19,12 +18,12 @@ import AboutView from '../views/AboutView';
 import MixView from '../views/MixView';
 import PlantView from '../views/PlantView';
 
+import Link from './Link';
+import PlantMap from './PlantMap';
+import DatePicker from './DatePicker';
+
 import buildLoader from '../HOC/buildLoader';
-import {
-  loadAllPlants,
-  plantsLoadedSelector,
-  plantsSelector,
-} from '../store/plants';
+import { loadAllPlants, plantsLoadedSelector } from '../store/plants';
 
 import { loadAllReactors, reactorsLoadedSelector } from '../store/reactors';
 import {
@@ -32,7 +31,7 @@ import {
   productionsLoadedSelector,
   productionsErrorSelector,
 } from '../store/productions';
-import { loadAllMix, mixLoadedSelector } from '../store/mix';
+import { loadAllMix, mixLoadedSelector, mixErrorSelector } from '../store/mix';
 
 import {
   testScreenType,
@@ -40,18 +39,13 @@ import {
   DRAWER_WIDTH,
   getWindowHeight,
 } from '../utils';
-import { PlantType } from '../utils/types';
-import PlantMap from './PlantMap';
 import {
   loadAllUnavailabilities,
   unavailabilitiesLoadedSelector,
   unavailabilitiesErrorSelector,
 } from '../store/unavailabilities';
-import {
-  loadAllRivers,
-  riversLoadedSelector,
-  riversSelector,
-} from '../store/rivers';
+import { loadAllRivers, riversLoadedSelector } from '../store/rivers';
+import { getCurrentDate } from '../store/otherSelectors';
 
 const PlantsLoader = buildLoader(loadAllPlants);
 const ReactorsLoader = buildLoader(loadAllReactors);
@@ -63,12 +57,14 @@ const RiversLoader = buildLoader(loadAllRivers);
 function AppLayout(props) {
   const {
     isLoaded,
-    plants,
-    goTo,
-    currentPlantId,
-    isFullPage,
-    rivers,
     error,
+
+    currentPlantId,
+    currentLocation,
+    currentDate,
+
+    isFullPage,
+    goTo,
   } = props;
   const isSmallScreen = !testScreenType('sm');
   const drawerHeight = isFullPage ? getWindowHeight() - HEADER_HEIGHT : 220;
@@ -77,10 +73,11 @@ function AppLayout(props) {
     <div className="AppLayout">
       <PlantsLoader />
       <ReactorsLoader />
-      <ProductionsLoader />
-      <MixLoader />
-      <UnavailabilitiesLoader />
       <RiversLoader />
+
+      <ProductionsLoader date={currentDate} />
+      <MixLoader date={currentDate} />
+      <UnavailabilitiesLoader date={currentDate} />
       <Spin
         size="large"
         spinning={!isLoaded}
@@ -134,12 +131,19 @@ function AppLayout(props) {
                     className="AppLayout__menu"
                     selectable={false}
                   >
-                    <Menu.Item>
-                      <Link to="/home">
-                        <strong>Nuclear monitor</strong>
-                      </Link>
-                    </Menu.Item>
-                    <Menu.SubMenu title={<Icon type="menu" />}>
+                    <Menu.SubMenu
+                      title={
+                        // eslint-disable-next-line react/jsx-wrap-multilines
+                        <span>
+                          <Icon type="menu" />
+                          <strong>Nuclear monitor</strong>
+                        </span>
+                      }
+                      popupClassName="AppLayout__submenu"
+                    >
+                      <Menu.Item key="home">
+                        <Link to="/home">Accueil</Link>
+                      </Menu.Item>
                       <Menu.Item key="mix">
                         <Link to="/mix">Mix</Link>
                       </Menu.Item>
@@ -148,16 +152,43 @@ function AppLayout(props) {
                       </Menu.Item>
                     </Menu.SubMenu>
                   </Menu>
-                  <div className="AppLayout__header__date">
-                    <div>{moment().format('dddd DD/MM/YYYY')}</div>
-                    <div>{moment().format('à HH:00')}</div>
-                  </div>
+                  <DatePicker
+                    onDate={
+                      v =>
+                        moment(v).isSame(moment(), 'day')
+                          ? goTo(`${currentLocation}`, false)
+                          : goTo(
+                              `${currentLocation}?date=${moment(
+                                v,
+                              ).toISOString()}`,
+                              false,
+                            )
+                      // eslint-disable-next-line react/jsx-curly-newline
+                    }
+                    value={currentDate}
+                  >
+                    <div className="AppLayout__header__date">
+                      <div className="AppLayout__header__date__text">
+                        <div>
+                          {moment(currentDate).format('dddd DD/MM/YYYY')}
+                        </div>
+                        <div>{moment(currentDate).format('à HH:00')}</div>
+                      </div>
+
+                      <div className="AppLayout__header__date__calendar">
+                        <Icon
+                          type="calendar"
+                          theme="twoTone"
+                          twoToneColor="white"
+                        />
+                      </div>
+                    </div>
+                  </DatePicker>
                 </Layout.Header>
 
                 <Layout.Content className="AppLayout__content">
                   <PlantMap
-                    plants={plants}
-                    rivers={rivers}
+                    currentDate={currentDate}
                     currentPlantId={currentPlantId}
                     onPlantClick={plant => goTo(`/plant/${plant.id}`)}
                     drawerHeight={drawerHeight}
@@ -174,14 +205,15 @@ function AppLayout(props) {
 
 AppLayout.propTypes = {
   isLoaded: PropTypes.bool.isRequired,
-  plants: PropTypes.arrayOf(PlantType).isRequired,
-  goTo: PropTypes.func.isRequired,
-  isFullPage: PropTypes.bool.isRequired,
-  currentPlantId: PropTypes.string,
-  // eslint-disable-next-line react/forbid-prop-types
-  rivers: PropTypes.array.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   error: PropTypes.object,
+
+  goTo: PropTypes.func.isRequired,
+  currentLocation: PropTypes.string.isRequired,
+  currentDate: PropTypes.string.isRequired,
+
+  isFullPage: PropTypes.bool.isRequired,
+  currentPlantId: PropTypes.string,
 };
 
 AppLayout.defaultProps = {
@@ -196,25 +228,34 @@ export default withRouter(
       path: '/plant/:id',
       exact: false,
     });
-    const prodError = productionsErrorSelector(state);
-    const unavailabilitiesError = unavailabilitiesErrorSelector(state);
+    const currentDate = getCurrentDate(props.location);
+
+    const mixError = mixErrorSelector({ date: currentDate }, state);
+    const prodError = productionsErrorSelector({ date: currentDate }, state);
+    const unavailabilitiesError = unavailabilitiesErrorSelector(
+      { date: currentDate },
+      state,
+    );
 
     return {
       isLoaded:
         plantsLoadedSelector(state) &&
         reactorsLoadedSelector(state) &&
-        productionsLoadedSelector(state) &&
-        mixLoadedSelector(state) &&
-        unavailabilitiesLoadedSelector(state) &&
+        productionsLoadedSelector({ date: currentDate }, state) &&
+        mixLoadedSelector({ date: currentDate }, state) &&
+        unavailabilitiesLoadedSelector({ date: currentDate }, state) &&
         riversLoadedSelector(state),
-      plants: plantsSelector(state),
-      rivers: riversSelector(state),
-      goTo: url => props.history.push(url),
+      error: prodError || unavailabilitiesError || mixError,
+
+      goTo: (url, withSearch = true) =>
+        props.history.push(`${url}${withSearch ? props.location.search : ''}`),
+      currentLocation: props.location.pathname,
       currentPlantId: matchPlantPath && matchPlantPath.params.id,
+      currentDate,
+
       isFullPage: !!matchPath(props.location.pathname, {
         path: ['/plant/:id/:reactorIndex', '/mix'],
       }),
-      error: prodError || unavailabilitiesError,
     };
   })(AppLayout),
 );

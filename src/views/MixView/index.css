@@ -30,7 +30,10 @@
 }
 
 .MixView__date {
-  text-align: center;
+  padding: 0px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .MixView__nuclear {

@@ -37,7 +37,7 @@ function computeCo2(mix) {
   return a.e / a.total;
 }
 
-function MixComponent({ mix, slotIndex, setSlotIndex }) {
+function MixComponent({ mix, slotIndex, setSlotIndex, currentDate }) {
   return (
     <div className="MixComponent">
       <div className="MixComponent__header">
@@ -120,16 +120,16 @@ function MixComponent({ mix, slotIndex, setSlotIndex }) {
       <div className="MixComponent__sliderContainer">
         <Slider
           min={0}
-          max={95}
+          max={96}
           style={{ width: '100%' }}
           defaultValue={slotIndex}
           // value={slotIndex}
           onChange={debounce(setSlotIndex, 400)}
           tipFormatter={
             value =>
-              moment()
+              moment(currentDate)
                 .startOf('day')
-                .add((value + 1) * 15, 'minutes')
+                .add(value * 15, 'minutes')
                 .format('HH:mm')
             // eslint-disable-next-line react/jsx-curly-newline
           }
@@ -143,6 +143,7 @@ MixComponent.propTypes = {
   mix: PropTypes.arrayOf(MixType).isRequired,
   slotIndex: PropTypes.number.isRequired,
   setSlotIndex: PropTypes.func.isRequired,
+  currentDate: PropTypes.string.isRequired,
 };
 
 export default MixComponent;

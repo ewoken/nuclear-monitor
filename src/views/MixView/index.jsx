@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withState, compose } from 'recompose';
+import qs from 'qs';
 
-import { Row, Col } from 'antd';
+import { Row, Col, Icon } from 'antd';
 
 import moment from 'moment-timezone';
 
@@ -12,12 +14,19 @@ import { format } from '../../utils/index';
 import { MixType } from '../../utils/types';
 import { mixSelector } from '../../store/mix';
 import { reactorSetIndicatorsSelector } from '../../store/reactors';
+import { getCurrentDate } from '../../store/otherSelectors';
 
 import './index.css';
 import MixComponent from './components/MixComponent';
 
 function MixView(props) {
-  const { mix, slotIndex, setSlotIndex, reactorSetIndicators } = props;
+  const {
+    mix,
+    slotIndex,
+    setSlotIndex,
+    reactorSetIndicators,
+    currentDate,
+  } = props;
   const {
     totalPower,
     availablePower,
@@ -32,10 +41,9 @@ function MixView(props) {
   const prodAvailableRate = Math.floor(
     (100 * mix[slotIndex].nuclear) / availablePower,
   );
-  const date = moment()
-    .tz('Europe/Paris')
+  const date = moment(currentDate)
     .hour(Math.floor(slotIndex / 4))
-    .minutes(15 * ((slotIndex % 4) + 1))
+    .minutes(15 * (slotIndex % 4))
     .format('DD/MM/YYYY HH:mm');
 
   return (
@@ -46,8 +54,53 @@ function MixView(props) {
             mix={mix}
             slotIndex={slotIndex}
             setSlotIndex={setSlotIndex}
+            currentDate={currentDate}
           />
-          <div className="MixView__date">{date}</div>
+          <div className="MixView__date">
+            {moment(currentDate).isAfter('2012-01-02') ? (
+              <Link
+                to={location => ({
+                  pathname: location.pathname,
+                  search: qs.stringify({
+                    date: moment(currentDate)
+                      .subtract(1, 'day')
+                      .startOf('hour')
+                      .toISOString(),
+                  }),
+                })}
+              >
+                <Icon
+                  theme="twoTone"
+                  type="left-circle"
+                  style={{ fontSize: '18pt' }}
+                />
+              </Link>
+            ) : (
+              <div />
+            )}
+            <div>{date}</div>
+            {!moment().isSame(currentDate, 'day') ? (
+              <Link
+                to={location => ({
+                  pathname: location.pathname,
+                  search: qs.stringify({
+                    date: moment(currentDate)
+                      .add(1, 'day')
+                      .startOf('hour')
+                      .toISOString(),
+                  }),
+                })}
+              >
+                <Icon
+                  theme="twoTone"
+                  type="right-circle"
+                  style={{ fontSize: '18pt' }}
+                />
+              </Link>
+            ) : (
+              <div />
+            )}
+          </div>
           <div className="MixView__nuclear">
             <strong>{`Parc nucléaire (${total} GW):`}</strong>
             <div className="MixView__nuclear__indicator">
@@ -101,21 +154,30 @@ MixView.propTypes = {
     totallyUnavailableCount: PropTypes.number.isRequired,
     partiallyUnavailableCount: PropTypes.number.isRequired,
   }).isRequired,
+  currentDate: PropTypes.string.isRequired,
 };
 
-const withStateEnhancer = withState(
-  'slotIndex',
-  'setSlotIndex',
-  props => props.mix.filter(d => !Number.isNaN(d.nuclear)).length - 1,
+const withStateEnhancer = withState('slotIndex', 'setSlotIndex', props =>
+  moment().isSame(props.currentDate, 'day')
+    ? props.mix.filter(d => !Number.isNaN(d.nuclear)).length - 1
+    : moment(props.currentDate).hours() * 4,
 );
 
-const mixEnhancer = connect(state => ({
-  mix: mixSelector(state),
-}));
+const mixEnhancer = connect((state, props) => {
+  const currentDate = getCurrentDate(props.location);
+
+  return {
+    currentDate,
+    mix: mixSelector({ date: currentDate }, state),
+  };
+});
 
 const indicatorsEnhancer = connect((state, props) => ({
   reactorSetIndicators: reactorSetIndicatorsSelector(
-    Math.floor(props.slotIndex / 4),
+    {
+      date: props.currentDate,
+      slotIndex: Math.floor(props.slotIndex / 4),
+    },
     state,
   ),
 }));

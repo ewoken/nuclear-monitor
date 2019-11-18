@@ -1,77 +1,94 @@
 import { values, indexBy, prop } from 'ramda';
 
+import moment from 'moment';
 import { getUnavailabilities } from '../api';
 
 export const UNAVAILABILITIES_LOAD_ACTION = 'UNAVAILABILITIES_LOAD_ACTION';
 export const UNAVAILABILITIES_RECEIVE_ACTION =
   'UNAVAILABILITIES_RECEIVE_ACTION';
 
-function loadUnavailabilitiesAction() {
-  return { type: UNAVAILABILITIES_LOAD_ACTION };
+function loadUnavailabilitiesAction({ date }) {
+  return { type: UNAVAILABILITIES_LOAD_ACTION, date };
 }
 
-function receiveUnavailabilitiesAction({ data, errors }) {
-  return { type: UNAVAILABILITIES_RECEIVE_ACTION, data, errors };
+function receiveUnavailabilitiesAction({ date, data, errors }) {
+  return { type: UNAVAILABILITIES_RECEIVE_ACTION, date, data, errors };
 }
 
-export function loadAllUnavailabilities() {
-  return function dispatchLoadAllUnavailabilities(dispatch) {
-    dispatch(loadUnavailabilitiesAction());
-    return getUnavailabilities()
-      .then(data =>
-        dispatch(
-          receiveUnavailabilitiesAction({
-            data: indexBy(prop('eicCode'), data),
-          }),
-        ),
-      )
-      .catch(
-        errors =>
-          console.error(errors) ||
-          dispatch(receiveUnavailabilitiesAction({ errors })),
-      );
-  };
-}
-
-const initialState = {
-  loading: false,
-  loaded: false,
-  errors: null,
-  data: {},
-};
-
+const initialState = {};
 function unavailabilitiesReducer(state = initialState, action) {
   const { type } = action;
   switch (type) {
     case UNAVAILABILITIES_LOAD_ACTION:
-      return { ...state, loading: true };
+      return {
+        ...state,
+        [action.date]: {
+          loading: true,
+          loaded: true,
+          errors: null,
+          data: {},
+        },
+      };
     case UNAVAILABILITIES_RECEIVE_ACTION:
       return {
         ...state,
-        loading: false,
-        loaded: !action.errors,
-        errors: action.errors || null,
-        data: action.data || {},
+        [action.date]: {
+          loading: false,
+          loaded: !action.errors,
+          errors: action.errors || null,
+          data: indexBy(prop('eicCode'), action.data),
+        },
       };
     default:
       return state;
   }
 }
 
-export function unavailabilitiesLoadedSelector(state) {
-  return state.unavailabilities.loaded;
+export function unavailabilitiesLoadedSelector({ date: inputDate }, state) {
+  const date = moment(inputDate).format('YYYY-MM-DD');
+  return state.unavailabilities[date] && state.unavailabilities[date].loaded;
 }
 
-export function unavailabilitiesErrorSelector(state) {
-  return state.productions.errors;
+export function unavailabilitiesErrorSelector({ date: inputDate }, state) {
+  const date = moment(inputDate).format('YYYY-MM-DD');
+  return state.unavailabilities[date] && state.unavailabilities[date].errors;
 }
 
-export function unavailabilitiesSelector(state) {
-  return values(state.unavailabilities.data);
+export function unavailabilitiesSelector({ date: inputDate }, state) {
+  const date = moment(inputDate).format('YYYY-MM-DD');
+  return values(state.unavailabilities[date].data);
 }
 
-export function unavalabilitySelector(eicCode, state) {
-  return state.unavailabilities.data[eicCode];
+export function unavalabilitySelector({ date: inputDate, eicCode }, state) {
+  const date = moment(inputDate).format('YYYY-MM-DD');
+  return (
+    state.unavailabilities[date] && state.unavailabilities[date].data[eicCode]
+  );
+}
+
+export function loadAllUnavailabilities({ date: inputDate }) {
+  const date = moment(inputDate).format('YYYY-MM-DD');
+  return function dispatchLoadAllUnavailabilities(dispatch, getState) {
+    if (unavailabilitiesLoadedSelector({ date }, getState())) {
+      return Promise.resolve();
+    }
+
+    dispatch(loadUnavailabilitiesAction({ date }));
+    return getUnavailabilities({ date })
+      .then(data =>
+        dispatch(
+          receiveUnavailabilitiesAction({
+            date,
+            data,
+          }),
+        ),
+      )
+      .catch(
+        errors =>
+          console.error(errors) ||
+          dispatch(receiveUnavailabilitiesAction({ date, errors })),
+      );
+  };
 }
 
 export default unavailabilitiesReducer;

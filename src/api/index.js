@@ -1,4 +1,5 @@
 import { map } from 'ramda';
+import qs from 'qs';
 
 const { REACT_APP_NUCLEAR_MONITOR_API } = process.env;
 
@@ -36,24 +37,30 @@ export async function getReactors() {
   return data;
 }
 
-export async function getProductions() {
-  const res = await doFetch(`${REACT_APP_NUCLEAR_MONITOR_API}/productions`);
-  const data = await res.json();
-
-  return data.productions;
-}
-
-export async function getUnavailabilities() {
+export async function getProductions({ date }) {
   const res = await doFetch(
-    `${REACT_APP_NUCLEAR_MONITOR_API}/unavailabilities`,
+    `${REACT_APP_NUCLEAR_MONITOR_API}/productions?${qs.stringify({ date })}`,
   );
   const data = await res.json();
 
   return data;
 }
 
-export async function getMix() {
-  const res = await doFetch(`${REACT_APP_NUCLEAR_MONITOR_API}/mix`);
+export async function getUnavailabilities({ date }) {
+  const res = await doFetch(
+    `${REACT_APP_NUCLEAR_MONITOR_API}/unavailabilities?${qs.stringify({
+      date,
+    })}`,
+  );
+  const data = await res.json();
+
+  return data;
+}
+
+export async function getMix({ date }) {
+  const res = await doFetch(
+    `${REACT_APP_NUCLEAR_MONITOR_API}/mix?${qs.stringify({ date })}`,
+  );
   const data = await res.json();
 
   const { mix } = data;
@@ -65,5 +72,8 @@ export async function getMix() {
     map(() => NaN, mix[0]),
   );
 
-  return mix.concat(rest);
+  return {
+    date: data.date,
+    mix: mix.concat(rest),
+  };
 }

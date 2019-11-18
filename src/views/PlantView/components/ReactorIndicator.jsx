@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
+import moment from 'moment';
 
 const { ReactorType } = require('../../../utils/types');
 
@@ -36,9 +37,12 @@ StatusIndicator.propTypes = {
 };
 
 function ReactorIndicator(props) {
-  const { reactor } = props;
+  const { reactor, currentDate } = props;
   const prods = reactor.dayProductions;
-  const currentProd = prods[prods.length - 1];
+  const hourIndex = moment(currentDate).hours();
+
+  const index = Math.min(hourIndex, prods.length - 1);
+  const currentProd = prods[index];
   const absLoad = Math.max(0, currentProd.value);
   const part = Math.floor((absLoad / reactor.power_MW) * 100);
 
@@ -62,6 +66,7 @@ function ReactorIndicator(props) {
 
 ReactorIndicator.propTypes = {
   reactor: ReactorType.isRequired,
+  currentDate: PropTypes.string.isRequired,
 };
 
 export default ReactorIndicator;

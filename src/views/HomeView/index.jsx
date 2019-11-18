@@ -1,7 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 import { Typography } from 'antd';
+import Link from '../../components/Link';
 
 const { Title } = Typography;
 

@@ -1,5 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
+import moment from 'moment';
 
 import { Map, TileLayer, Marker, ZoomControl, GeoJSON } from 'react-leaflet';
 
@@ -12,6 +15,9 @@ import {
   DRAWER_WIDTH,
 } from '../utils';
 import { PlantType } from '../utils/types';
+
+import { plantsSelector } from '../store/plants';
+import { riversSelector } from '../store/rivers';
 
 const ICON_OPTIONS = {
   fillOpacity: 1,
@@ -30,14 +36,14 @@ function hasNotif(plant) {
   }, false);
 }
 
-function plantRatio(plant) {
+function plantRatio(plant, currentDate) {
+  const hourIndex = moment(currentDate).hours();
+
   const totalProd = plant.reactors.reduce((res, reactor) => {
+    const index = Math.min(reactor.dayProductions.length - 1, hourIndex);
     const prod =
       reactor.dayProductions.length > 0
-        ? Math.max(
-            reactor.dayProductions[reactor.dayProductions.length - 1].value,
-            0,
-          )
+        ? Math.max(reactor.dayProductions[index].value, 0)
         : 0;
 
     return res + prod;
@@ -48,9 +54,17 @@ function plantRatio(plant) {
 }
 
 function PlantMap(props) {
-  const { plants, currentPlantId, onPlantClick, drawerHeight, rivers } = props;
+  const {
+    plants,
+    currentPlantId,
+    onPlantClick,
+    drawerHeight,
+    rivers,
+    currentDate,
+  } = props;
   const isSmallScreen = !testScreenType('sm');
   const height = getWindowHeight();
+
   return (
     <Map
       center={[48.3, 2]}
@@ -79,12 +93,12 @@ function PlantMap(props) {
               ? new Leaflet.DivIcon.SVGIcon.IndicatorIcon({
                   ...ICON_OPTIONS,
                   color: 'red',
-                  loadRate: plantRatio(plant),
+                  loadRate: plantRatio(plant, currentDate),
                   notif: hasNotif(plant),
                 })
               : new Leaflet.DivIcon.SVGIcon.IndicatorIcon({
                   ...ICON_OPTIONS,
-                  loadRate: plantRatio(plant),
+                  loadRate: plantRatio(plant, currentDate),
                   notif: hasNotif(plant),
                 })
           }
@@ -105,10 +119,18 @@ PlantMap.propTypes = {
   currentPlantId: PropTypes.string,
   onPlantClick: PropTypes.func.isRequired,
   drawerHeight: PropTypes.number.isRequired,
+  currentDate: PropTypes.string.isRequired,
 };
 
 PlantMap.defaultProps = {
   currentPlantId: null,
 };
 
-export default PlantMap;
+const ConnectedPlantMap = connect((state, props) => {
+  return {
+    plants: plantsSelector({ date: props.currentDate }, state),
+    rivers: riversSelector(state),
+  };
+})(PlantMap);
+
+export default ConnectedPlantMap;

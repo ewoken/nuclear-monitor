@@ -9,6 +9,7 @@ import store from './store';
 import AppLayout from './components/AppLayout';
 
 moment.locale('fr');
+moment.tz.setDefault('Europe/Paris');
 
 function App() {
   return (

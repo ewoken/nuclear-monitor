@@ -1,4 +1,5 @@
 import { values, indexBy, prop, sortBy } from 'ramda';
+import moment from 'moment';
 
 import { getReactors } from '../api';
 
@@ -79,10 +80,10 @@ function getStatus(unavailability) {
   return 'RUNNING';
 }
 
-export function reactorSelector(eicCode, state) {
+export function reactorSelector({ eicCode, date }, state) {
   const reactor = state.reactors.data[eicCode];
-  const dayProductions = productionSelector(eicCode, state);
-  const unavailability = unavalabilitySelector(eicCode, state);
+  const dayProductions = productionSelector({ eicCode, date }, state);
+  const unavailability = unavalabilitySelector({ eicCode, date }, state);
 
   return {
     ...reactor,
@@ -92,16 +93,16 @@ export function reactorSelector(eicCode, state) {
   };
 }
 
-export function reactorsSelector(state) {
+export function reactorsSelector({ date }, state) {
   return values(state.reactors.data).map(reactor =>
-    reactorSelector(reactor.eicCode, state),
+    reactorSelector({ eicCode: reactor.eicCode, date }, state),
   );
 }
 
-export function reactorsOfPlantSelector(plantId, state) {
+export function reactorsOfPlantSelector({ plantId, date }, state) {
   const reactors = Object.values(state.reactors.data)
     .filter(reactor => reactor.plantId === plantId)
-    .map(reactor => reactorSelector(reactor.eicCode, state));
+    .map(reactor => reactorSelector({ eicCode: reactor.eicCode, date }, state));
 
   return sortBy(prop('reactorIndex'), reactors);
 }
@@ -113,8 +114,14 @@ const INIT_DATA = {
   partiallyUnavailableCount: 0,
   totallyUnavailableCount: 0,
 };
-export function reactorSetIndicatorsSelector(hourOfDay, state) {
-  const reactors = reactorsSelector(state);
+export function reactorSetIndicatorsSelector(
+  { date: dateString, slotIndex },
+  state,
+) {
+  const date = moment(dateString)
+    .startOf('day')
+    .add(slotIndex * 15, 'minutes');
+  const reactors = reactorsSelector({ date: dateString }, state);
 
   return reactors.reduce((res, reactor) => {
     const res2 = {
@@ -124,7 +131,11 @@ export function reactorSetIndicatorsSelector(hourOfDay, state) {
       totally: 0,
     };
 
-    if (reactor.unavailability) {
+    if (
+      reactor.unavailability &&
+      date.isAfter(reactor.unavailability.startDate) &&
+      date.isBefore(reactor.unavailability.endDate)
+    ) {
       if (reactor.unavailability.availablePower_MW === 0) {
         res2.totally = 1;
       } else {
@@ -148,14 +159,14 @@ export function reactorSetIndicatorsSelector(hourOfDay, state) {
 }
 
 export function reactorByPlantAndIndexSelector(
-  { plantId, reactorIndex },
+  { plantId, reactorIndex, date },
   state,
 ) {
   const reacto = Object.values(state.reactors.data).find(
     reactor =>
       reactor.plantId === plantId && reactor.reactorIndex === reactorIndex,
   );
-  return reacto && reactorSelector(reacto.eicCode, state);
+  return reacto && reactorSelector({ eicCode: reacto.eicCode, date }, state);
 }
 
 export function reactorsOfPlant(plantId, state) {

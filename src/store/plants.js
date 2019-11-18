@@ -62,15 +62,17 @@ export function plantsLoadedSelector(state) {
   return state.plants.loaded;
 }
 
-export function plantSelector(plantId, state) {
+export function plantSelector({ plantId, date }, state) {
   return {
     ...state.plants.data[plantId],
-    reactors: reactorsOfPlantSelector(plantId, state),
+    reactors: reactorsOfPlantSelector({ plantId, date }, state),
   };
 }
 
-export function plantsSelector(state) {
-  return values(state.plants.data).map(plant => plantSelector(plant.id, state));
+export function plantsSelector({ date }, state) {
+  return values(state.plants.data).map(plant =>
+    plantSelector({ plantId: plant.id, date }, state),
+  );
 }
 
 export default plantsReducer;

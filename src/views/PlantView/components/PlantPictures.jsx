@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { Link } from 'react-router-dom';
 import { Carousel, Icon } from 'antd';
 import { PlantType } from '../../../utils/types';
+import Link from '../../../components/Link';
 
 function PlantPictures(props) {
   const { plant } = props;

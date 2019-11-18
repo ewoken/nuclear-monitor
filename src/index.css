@@ -64,6 +64,10 @@ body {
   left: 25%;
 }
 
+.AppLayout__submenu {
+  left: 10px !important;
+}
+
 .AppLayout__header.ant-layout-header {
   position: fixed;
   z-index: 100;
@@ -77,12 +81,22 @@ body {
   position: absolute;
   top: 0;
   right: 20px;
-  line-height: initial;
+  display: flex;
+  cursor: pointer;
+}
+
+.AppLayout__header__date__text {
   font-size: 8pt;
+  line-height: initial;
   display: flex;
   flex-direction: column;
   text-align: right;
   justify-content: center;
+  margin-right: 5px;
+}
+
+.AppLayout__header__date__calendar {
+  font-size: 20px;
 }
 
 .HomeView {
@@ -93,4 +107,14 @@ body {
   margin-top: 50px;
   text-align: center;
   font-size: 9pt;
+}
+
+.ant-calendar-picker-container {
+  top: 64px !important;
+  right: 20px !important;
+  left: unset !important;
+}
+
+.ant-calendar-input-wrap {
+  display: none !important;
 }

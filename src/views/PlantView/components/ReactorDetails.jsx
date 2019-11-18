@@ -1,14 +1,17 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { Descriptions, Icon } from 'antd';
 import moment from 'moment-timezone';
+import qs from 'qs';
 
 import { ReactorType } from '../../../utils/types';
+import Link from '../../../components/Link';
 
 import ReactorLoadChart from './ReactorLoadChart';
 
-function shouldDisplayLoadGraph(reactor) {
+function shouldDisplayLoadGraph(reactor, currentDate) {
   if (!reactor.unavailability) {
     return true;
   }
@@ -16,12 +19,12 @@ function shouldDisplayLoadGraph(reactor) {
 
   return (
     reactor.unavailability.availablePower_MW > 0 ||
-    startDate.isAfter(moment().startOf('day')) ||
-    moment().diff(startDate, 'hours') < 6
+    startDate.isAfter(moment(currentDate).startOf('day')) ||
+    moment(currentDate).diff(startDate, 'hours') < 6
   );
 }
 
-function ReactorDetails({ reactor }) {
+function ReactorDetails({ reactor, currentDate }) {
   return (
     <div className="ReactorDetails">
       <Descriptions
@@ -48,8 +51,55 @@ function ReactorDetails({ reactor }) {
         </Descriptions.Item>
       </Descriptions>
 
-      {shouldDisplayLoadGraph(reactor) && (
-        <ReactorLoadChart reactor={reactor} />
+      {shouldDisplayLoadGraph(reactor, currentDate) && (
+        <div>
+          <ReactorLoadChart reactor={reactor} />
+          <div className="MixView__date">
+            {moment(currentDate).isAfter('2012-01-02') ? (
+              <RouterLink
+                to={location => ({
+                  pathname: location.pathname,
+                  search: qs.stringify({
+                    date: moment(currentDate)
+                      .subtract(1, 'day')
+                      .startOf('hour')
+                      .toISOString(),
+                  }),
+                })}
+              >
+                <Icon
+                  theme="twoTone"
+                  type="left-circle"
+                  style={{ fontSize: '18pt' }}
+                />
+              </RouterLink>
+            ) : (
+              <div />
+            )}
+            <div>{moment(currentDate).format('DD/MM/YYYY HH:mm')}</div>
+            {!moment().isSame(currentDate, 'day') ? (
+              <RouterLink
+                to={location => ({
+                  pathname: location.pathname,
+                  search: qs.stringify({
+                    date: moment(currentDate)
+                      .add(1, 'day')
+                      .startOf('hour')
+                      .toISOString(),
+                  }),
+                })}
+              >
+                <Icon
+                  theme="twoTone"
+                  type="right-circle"
+                  style={{ fontSize: '18pt' }}
+                />
+              </RouterLink>
+            ) : (
+              <div />
+            )}
+          </div>
+        </div>
       )}
 
       {reactor.unavailability && (
@@ -61,18 +111,16 @@ function ReactorDetails({ reactor }) {
           style={{ marginTop: 10 }}
         >
           <Descriptions.Item label="Début">
-            {moment(reactor.unavailability.startDate)
-              .tz('Europe/Paris')
-              .format('DD/MM/YYYY HH:mm')}
+            {moment(reactor.unavailability.startDate).format(
+              'DD/MM/YYYY HH:mm',
+            )}
           </Descriptions.Item>
           <Descriptions.Item label="Fin">
-            {moment(reactor.unavailability.endDate)
-              .tz('Europe/Paris')
-              .format('DD/MM/YYYY HH:mm')}
+            {moment(reactor.unavailability.endDate).format('DD/MM/YYYY HH:mm')}
           </Descriptions.Item>
           <Descriptions.Item label="Type">
             {reactor.unavailability.type === 'PLANNED_MAINTENANCE'
-              ? 'Plannifiée'
+              ? 'Planifiée'
               : 'Fortuite'}
           </Descriptions.Item>
           <Descriptions.Item label="Puissance disponible">
@@ -89,6 +137,7 @@ function ReactorDetails({ reactor }) {
 
 ReactorDetails.propTypes = {
   reactor: ReactorType.isRequired,
+  currentDate: PropTypes.string.isRequired,
 };
 
 export default ReactorDetails;

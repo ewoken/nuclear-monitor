@@ -5,18 +5,21 @@ import { connect } from 'react-redux';
 import {
   Route, // as BaseRoute,
   Switch,
-  Link,
   Redirect,
 } from 'react-router-dom';
 import { Row, Col, Select, Tag, Dropdown, Menu, Button } from 'antd';
 
 import { plantSelector, plantsSelector } from '../../store/plants';
 import { PlantType, ReactorType } from '../../utils/types';
+import Link from '../../components/Link';
+
 import ReactorIndicator from './components/ReactorIndicator';
 import {
   reactorsOfPlantSelector,
   reactorByPlantAndIndexSelector,
 } from '../../store/reactors';
+import { getCurrentDate } from '../../store/otherSelectors';
+
 import ReactorDetails from './components/ReactorDetails';
 import PlantPictures from './components/PlantPictures';
 
@@ -26,6 +29,7 @@ const ReactorDetailsContainer = connect((state, props) => {
   return {
     reactor: reactorByPlantAndIndexSelector(
       {
+        date: props.currentDate,
         plantId: props.match.params.plantId,
         reactorIndex: Number(props.match.params.reactorIndex),
       },
@@ -54,7 +58,7 @@ function plantMenu(plant) {
 }
 
 function PlantView(props) {
-  const { plants, currentPlant, reactors, goTo } = props;
+  const { currentDate, plants, currentPlant, reactors, goTo } = props;
 
   if (!currentPlant) {
     return <Redirect to="/" />;
@@ -106,7 +110,10 @@ function PlantView(props) {
                   key={reactor.eicCode}
                   to={`/plant/${currentPlant.id}/${reactor.reactorIndex}`}
                 >
-                  <ReactorIndicator reactor={reactor} />
+                  <ReactorIndicator
+                    reactor={reactor}
+                    currentDate={currentDate}
+                  />
                 </Link>
               ))}
             </div>
@@ -125,7 +132,13 @@ function PlantView(props) {
               />
               <Route
                 path="/plant/:plantId/:reactorIndex"
-                component={ReactorDetailsContainer}
+                component={props2 => (
+                  <ReactorDetailsContainer
+                    // eslint-disable-next-line react/jsx-props-no-spreading
+                    {...props2}
+                    currentDate={currentDate}
+                  />
+                )}
               />
               <Route
                 component={() => (
@@ -141,6 +154,7 @@ function PlantView(props) {
 }
 
 PlantView.propTypes = {
+  currentDate: PropTypes.string.isRequired,
   plants: PropTypes.arrayOf(PlantType).isRequired,
   currentPlant: PlantType.isRequired,
   reactors: PropTypes.arrayOf(ReactorType).isRequired,
@@ -149,12 +163,13 @@ PlantView.propTypes = {
 
 export default connect((state, props) => {
   const { plantId } = props.match.params;
-  const reactors = reactorsOfPlantSelector(plantId, state);
+  const currentDate = getCurrentDate(props.location);
 
   return {
-    plants: plantsSelector(state),
-    currentPlant: plantSelector(plantId, state),
-    goTo: url => props.history.push(url),
-    reactors,
+    currentDate,
+    plants: plantsSelector({ date: currentDate }, state),
+    currentPlant: plantSelector({ plantId, date: currentDate }, state),
+    reactors: reactorsOfPlantSelector({ plantId, date: currentDate }, state),
+    goTo: url => props.history.push(`${url}${props.location.search}`),
   };
 })(PlantView);
