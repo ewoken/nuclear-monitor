@@ -2,7 +2,7 @@
   "name": "nuclear-monitor",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://ewoken.github.io/nuclear-monitor/",
+  "homepage": "https://nuclear-monitor.fr",
   "dependencies": {
     "antd": "^3.22.0",
     "babel-plugin-import": "^1.12.0",
