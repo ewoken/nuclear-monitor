@@ -40,7 +40,7 @@ export async function getProductions() {
   const res = await doFetch(`${REACT_APP_NUCLEAR_MONITOR_API}/productions`);
   const data = await res.json();
 
-  return data;
+  return data.productions;
 }
 
 export async function getUnavailabilities() {
@@ -56,13 +56,14 @@ export async function getMix() {
   const res = await doFetch(`${REACT_APP_NUCLEAR_MONITOR_API}/mix`);
   const data = await res.json();
 
-  if (data.length < 1) {
+  const { mix } = data;
+  if (mix.length < 1) {
     return [];
   }
 
-  const rest = Array.from({ length: 24 * 4 - data.length }).map(() =>
-    map(() => NaN, data[0]),
+  const rest = Array.from({ length: 24 * 4 - mix.length }).map(() =>
+    map(() => NaN, mix[0]),
   );
 
-  return data.concat(rest);
+  return mix.concat(rest);
 }
