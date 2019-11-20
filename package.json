@@ -31,7 +31,8 @@
     "lint": "eslint --ignore-path .gitignore --ignore-pattern \"!**/.*\" .",
     "fix": "eslint --ignore-path .gitignore --ignore-pattern \"!**/.*\" --fix .",
     "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
+    "build": "./scripts/build.sh",
+    "doBuild": "react-app-rewired build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "deploy": "gh-pages -d build --message \"[ci skip] Circle CI deploy\" --user \"Circle CI <circleci@circleci.org>\""
