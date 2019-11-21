@@ -92,7 +92,11 @@ async function getUnavailabilities(input, { rteToken }) {
       reason: d.reason,
       availablePower_MW: d.values[0].value,
       status: d.status,
-    }));
+    }))
+    .filter(
+      d =>
+        moment(date).isAfter(d.startDate) && moment(date).isBefore(d.endDate),
+    );
 
   return res;
 }
