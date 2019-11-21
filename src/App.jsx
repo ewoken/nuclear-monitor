@@ -7,6 +7,7 @@ import 'moment/locale/fr';
 import store from './store';
 
 import AppLayout from './components/AppLayout';
+import AnalyticsComponent from './components/AnalyticsComponent';
 
 moment.locale('fr');
 moment.tz.setDefault('Europe/Paris');
@@ -17,7 +18,9 @@ function App() {
       <Provider store={store}>
         <Router>
           <Route path="/">
-            <AppLayout />
+            <AnalyticsComponent>
+              <AppLayout />
+            </AnalyticsComponent>
           </Route>
         </Router>
       </Provider>
