@@ -11,19 +11,6 @@ import Link from '../../../components/Link';
 
 import ReactorLoadChart from './ReactorLoadChart';
 
-function shouldDisplayLoadGraph(reactor, currentDate) {
-  if (!reactor.unavailability) {
-    return true;
-  }
-  const startDate = moment(reactor.unavailability.startDate);
-
-  return (
-    reactor.unavailability.availablePower_MW > 0 ||
-    startDate.isAfter(moment(currentDate).startOf('day')) ||
-    moment(currentDate).diff(startDate, 'hours') < 6
-  );
-}
-
 function ReactorDetails({ reactor, currentDate }) {
   return (
     <div className="ReactorDetails">
@@ -51,56 +38,54 @@ function ReactorDetails({ reactor, currentDate }) {
         </Descriptions.Item>
       </Descriptions>
 
-      {shouldDisplayLoadGraph(reactor, currentDate) && (
-        <div>
-          <ReactorLoadChart reactor={reactor} />
-          <div className="MixView__date">
-            {moment(currentDate).isAfter('2012-01-02') ? (
-              <RouterLink
-                to={location => ({
-                  pathname: location.pathname,
-                  search: qs.stringify({
-                    date: moment(currentDate)
-                      .subtract(1, 'day')
-                      .startOf('hour')
-                      .toISOString(),
-                  }),
-                })}
-              >
-                <Icon
-                  theme="twoTone"
-                  type="left-circle"
-                  style={{ fontSize: '18pt' }}
-                />
-              </RouterLink>
-            ) : (
-              <div />
-            )}
-            <div>{moment(currentDate).format('DD/MM/YYYY HH:mm')}</div>
-            {!moment().isSame(currentDate, 'day') ? (
-              <RouterLink
-                to={location => ({
-                  pathname: location.pathname,
-                  search: qs.stringify({
-                    date: moment(currentDate)
-                      .add(1, 'day')
-                      .startOf('hour')
-                      .toISOString(),
-                  }),
-                })}
-              >
-                <Icon
-                  theme="twoTone"
-                  type="right-circle"
-                  style={{ fontSize: '18pt' }}
-                />
-              </RouterLink>
-            ) : (
-              <div />
-            )}
-          </div>
+      <div>
+        <ReactorLoadChart reactor={reactor} />
+        <div className="MixView__date">
+          {moment(currentDate).isAfter('2012-01-02') ? (
+            <RouterLink
+              to={location => ({
+                pathname: location.pathname,
+                search: qs.stringify({
+                  date: moment(currentDate)
+                    .subtract(1, 'day')
+                    .startOf('hour')
+                    .toISOString(),
+                }),
+              })}
+            >
+              <Icon
+                theme="twoTone"
+                type="left-circle"
+                style={{ fontSize: '18pt' }}
+              />
+            </RouterLink>
+          ) : (
+            <div />
+          )}
+          <div>{moment(currentDate).format('DD/MM/YYYY HH:mm')}</div>
+          {!moment().isSame(currentDate, 'day') ? (
+            <RouterLink
+              to={location => ({
+                pathname: location.pathname,
+                search: qs.stringify({
+                  date: moment(currentDate)
+                    .add(1, 'day')
+                    .startOf('hour')
+                    .toISOString(),
+                }),
+              })}
+            >
+              <Icon
+                theme="twoTone"
+                type="right-circle"
+                style={{ fontSize: '18pt' }}
+              />
+            </RouterLink>
+          ) : (
+            <div />
+          )}
         </div>
-      )}
+      </div>
 
       {reactor.unavailability && (
         <Descriptions
