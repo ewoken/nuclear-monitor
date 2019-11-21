@@ -25,6 +25,10 @@ body {
   overflow-y: scroll;
 }
 
+.ant-drawer-left .ant-drawer-content-wrapper {
+  height: calc(100% - 64px) !important;
+}
+
 .ant-drawer .ant-drawer-content-wrapper .ant-drawer-content {
   min-height: 100%;
   height: auto;
@@ -117,4 +121,8 @@ body {
 
 .ant-calendar-input-wrap {
   display: none !important;
+}
+
+.ant-descriptions-item-content {
+  word-wrap: anywhere;
 }
