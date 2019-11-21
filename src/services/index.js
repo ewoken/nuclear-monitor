@@ -11,6 +11,7 @@ async function getProductions(input, { rteToken, logger, cache }) {
   const dateInput = assertInput(DateInput, input);
   const date = moment(dateInput.date).tz('Europe/Paris');
   const isToday = date.isSame(moment().tz('Europe/Paris'), 'day');
+  const isCitrouille = isToday && date.hour() < 1;
 
   const key = `PROD-${date.format('YYYY-MM-DD-HH')}`;
   const cacheRes = cache.getValue(key);
@@ -25,6 +26,7 @@ async function getProductions(input, { rteToken, logger, cache }) {
     params: {
       start_date: moment(date)
         .startOf('day')
+        .subtract(isCitrouille ? 1 : 0, 'day')
         .format(),
       end_date: moment(date)
         .startOf('day')
@@ -34,11 +36,12 @@ async function getProductions(input, { rteToken, logger, cache }) {
     token: rteToken,
   });
 
+  const offset = isCitrouille ? 23 : 0;
   const productions = data.actual_generations_per_unit
     .filter(d => d.unit.production_type === 'NUCLEAR')
     .map(reactor => ({
       eicCode: reactor.unit.eic_code,
-      values: reactor.values.slice(0, 25).map(value => ({
+      values: reactor.values.slice(offset, 25 + offset).map(value => ({
         startDate: value.start_date,
         endDate: value.end_date,
         updatedDate: value.updated_date,
