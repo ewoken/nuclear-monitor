@@ -68,7 +68,7 @@ export async function getMix({ date }) {
     return [];
   }
 
-  const rest = Array.from({ length: 24 * 4 - mix.length }).map(() =>
+  const rest = Array.from({ length: 25 * 4 - mix.length }).map(() =>
     map(() => NaN, mix[0]),
   );
 
