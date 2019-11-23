@@ -41,6 +41,10 @@ function MixView(props) {
   const prodAvailableRate = Math.floor(
     (100 * mix[slotIndex].nuclear) / availablePower,
   );
+  const availableSize = Math.max(
+    ((availablePower - (mix[slotIndex].nuclear || 0)) / totalPower) * 100,
+    0,
+  );
   const date = moment(currentDate)
     .hour(Math.floor(slotIndex / 4))
     .minutes(15 * (slotIndex % 4))
@@ -107,6 +111,7 @@ function MixView(props) {
               <div
                 className="MixView__nuclear__indicator__prod"
                 style={{
+                  display: mix[slotIndex].nuclear ? 'inherit' : 'none',
                   width: `${((mix[slotIndex].nuclear || 0) / totalPower) *
                     100}%`,
                 }}
@@ -117,9 +122,7 @@ function MixView(props) {
               <div
                 className="MixView__nuclear__indicator__available"
                 style={{
-                  width: `${((availablePower - (mix[slotIndex].nuclear || 0)) /
-                    totalPower) *
-                    100}%`,
+                  width: `${availableSize}%`,
                 }}
               />
             </div>
