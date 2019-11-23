@@ -60,11 +60,16 @@ export function productionsSelector({ date: inputDate }, state) {
 
 export function productionSelector({ date: inputDate, eicCode }, state) {
   const date = moment(inputDate).format('YYYY-MM-DD');
-  return (
-    state.productions[date] &&
-    state.productions[date].data[eicCode] &&
-    state.productions[date].data[eicCode].values
-  );
+
+  if (state.productions[date] && state.productions[date].data[eicCode]) {
+    const data = state.productions[date].data[eicCode].values;
+
+    const endOfDay = Array.from({
+      length: 24 - data.length + 1,
+    }).map(() => ({ value: null }));
+    return data.map(d => ({ value: Math.max(d.value, 0) })).concat(endOfDay);
+  }
+  return null;
 }
 
 export function loadAllProductions({ date: inputDate }) {

@@ -1,6 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { ResponsiveContainer, AreaChart, XAxis, YAxis, Area } from 'recharts';
+import {
+  ResponsiveContainer,
+  AreaChart,
+  XAxis,
+  YAxis,
+  Area,
+  Tooltip,
+  Dot,
+} from 'recharts';
 
 import { ReactorType } from '../../../utils/types';
 
@@ -12,20 +20,31 @@ function tickFormatter(value) {
 
 function ReactorLoadChart(props) {
   const { reactor } = props;
-
-  const endOfDay = Array.from({
-    length: 24 - reactor.dayProductions.length + 1,
-  }).map(() => ({ value: null }));
-  const data = reactor.dayProductions
-    .map(d => ({ value: Math.max(d.value, 0) }))
-    .concat(endOfDay);
+  const [indexSelected, setSelected] = useState(null);
+  const hour =
+    indexSelected > 9 ? `${indexSelected}:00` : `0${indexSelected}:00`;
+  const prod =
+    indexSelected !== null &&
+    reactor.dayProductions[indexSelected].value != null
+      ? `${Math.floor(reactor.dayProductions[indexSelected].value)}`
+      : '-';
 
   return (
     <div key={reactor.name} className="ReactorLoadChart">
-      <div>Production (MW)</div>
+      <div>
+        {`Production ${
+          indexSelected !== null ? `à ${hour}: ${prod} MW` : '(MW)'
+        }`}
+      </div>
       <div className="ReactorLoadChart__chart">
         <ResponsiveContainer>
-          <AreaChart data={data}>
+          <AreaChart
+            data={reactor.dayProductions}
+            onClick={v => {
+              setSelected(v && v.activeTooltipIndex);
+              return v;
+            }}
+          >
             <XAxis
               domain={[0, 24]}
               ticks={TICKS}
@@ -35,12 +54,16 @@ function ReactorLoadChart(props) {
             <Area
               dataKey="value"
               dot={false}
-              activeDot={false}
+              activeDot={v => {
+                setSelected(v.index);
+                return null;
+              }}
               type="monotone"
               stroke="rgb(28, 114, 64)"
               fill="rgb(38, 166, 91)"
               fillOpacity={1}
             />
+            <Tooltip content={() => null} />
           </AreaChart>
         </ResponsiveContainer>
       </div>

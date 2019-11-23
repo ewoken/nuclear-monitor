@@ -37,12 +37,17 @@ function hasNotif(plant) {
 }
 
 function plantRatio(plant, currentDate) {
-  const hourIndex = moment(currentDate).hours();
+  const hourIndex = Math.max(moment(currentDate).hours(), 0);
 
   const totalProd = plant.reactors.reduce((res, reactor) => {
-    const index = Math.min(reactor.dayProductions.length - 1, hourIndex);
+    const lastIndex = reactor.dayProductions.reduce(
+      (last, v, i) => (v.value === null ? last : i),
+      0,
+    );
+    const index = Math.min(lastIndex, hourIndex);
+
     const prod =
-      reactor.dayProductions.length > 0
+      reactor.dayProductions[index].value !== null
         ? Math.max(reactor.dayProductions[index].value, 0)
         : 0;
 

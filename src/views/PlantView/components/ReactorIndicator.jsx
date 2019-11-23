@@ -40,8 +40,12 @@ function ReactorIndicator(props) {
   const { reactor, currentDate } = props;
   const prods = reactor.dayProductions;
   const hourIndex = moment(currentDate).hours();
+  const lastIndex = reactor.dayProductions.reduce(
+    (last, v, i) => (v.value === null ? last : i),
+    0,
+  );
 
-  const index = Math.min(hourIndex, prods.length - 1);
+  const index = Math.min(lastIndex, hourIndex);
   const currentProd = prods[index];
   const absLoad = Math.max(0, currentProd.value);
   const part = Math.floor((absLoad / reactor.power_MW) * 100);
