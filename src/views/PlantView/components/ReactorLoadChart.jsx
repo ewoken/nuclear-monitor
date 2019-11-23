@@ -7,7 +7,6 @@ import {
   YAxis,
   Area,
   Tooltip,
-  Dot,
 } from 'recharts';
 
 import { ReactorType } from '../../../utils/types';
