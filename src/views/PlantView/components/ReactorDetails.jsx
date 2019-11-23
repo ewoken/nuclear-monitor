@@ -62,7 +62,7 @@ function ReactorDetails({ reactor, currentDate }) {
           ) : (
             <div />
           )}
-          <div>{moment(currentDate).format('DD/MM/YYYY HH:mm')}</div>
+          <div>{moment(currentDate).format('DD/MM/YYYY')}</div>
           {!moment().isSame(currentDate, 'day') ? (
             <RouterLink
               to={location => ({
