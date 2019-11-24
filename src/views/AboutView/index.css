@@ -5,3 +5,7 @@
 .AboutView .ant-comment-inner {
   padding: 0 0;
 }
+
+.ant-collapse-content-box {
+  text-align: justify;
+}

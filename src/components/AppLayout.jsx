@@ -254,7 +254,7 @@ export default withRouter(
       currentDate,
 
       isFullPage: !!matchPath(props.location.pathname, {
-        path: ['/plant/:id/:reactorIndex', '/mix'],
+        path: ['/plant/:id/:reactorIndex', '/mix', '/about'],
       }),
     };
   })(AppLayout),
