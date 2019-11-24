@@ -43,7 +43,7 @@ async function main() {
   const unavailabilities = db.collection('unavailabilities');
 
   const weekCount = moment().diff(START_DATE, 'weeks');
-  const weeks = Array.from({ length: weekCount }).map((_, i) => ({
+  const weeks = Array.from({ length: weekCount + 1 }).map((_, i) => ({
     startDate: moment(START_DATE)
       .startOf('day')
       .add(i, 'weeks')
