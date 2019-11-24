@@ -24,7 +24,8 @@ async function updateUnavailabies(environment) {
         .format(),
       end_date: moment()
         .tz('Europe/Paris')
-        .endOf('day')
+        .startOf('day')
+        .add(1, 'day')
         .format(),
       date_type: 'UPDATED_DATE',
     },
