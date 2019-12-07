@@ -1,8 +1,18 @@
+// const fs = require('fs');
 const { MongoClient } = require('mongodb');
 const moment = require('moment-timezone');
 const config = require('config');
 
-const { uniqBy } = require('ramda');
+const {
+  groupBy,
+  values,
+  sortBy,
+  equals,
+  pickBy,
+  uniqBy,
+  aperture,
+  omit,
+} = require('ramda');
 
 const { getRessource, fetchToken, DATE_FORMAT } = require('../rteApi');
 
@@ -10,6 +20,8 @@ const { chunkAndChainPromises } = require('../utils/helpers');
 
 const uri = config.get('mongoDb.uri');
 const dbName = config.get('mongoDb.dbName');
+
+moment.tz('Europe/Paris');
 
 const START_DATE = moment('2010-12-15');
 
@@ -30,20 +42,9 @@ function unavailabilitiesFormatter(data) {
     }));
 }
 
-async function main() {
-  console.log(process.env.NODE_ENV);
-  console.log(uri);
-  console.log(dbName);
-  const mongoClient = await MongoClient.connect(uri, {
-    useUnifiedTopology: true,
-  });
-  const token = await fetchToken();
-
-  const db = mongoClient.db(dbName);
-  const unavailabilities = db.collection('unavailabilities');
-
-  const weekCount = moment().diff(START_DATE, 'weeks');
-  const weeks = Array.from({ length: weekCount + 1 }).map((_, i) => ({
+async function getAllUnavailabilities() {
+  const weekCount = moment().diff(START_DATE, 'weeks') + 1;
+  const weeks = Array.from({ length: weekCount }).map((_, i) => ({
     startDate: moment(START_DATE)
       .startOf('day')
       .add(i, 'weeks')
@@ -56,10 +57,7 @@ async function main() {
   }));
   let i = 0;
 
-  await unavailabilities.dropIndexes();
-  await unavailabilities.deleteMany({});
-  await unavailabilities.createIndex({ id: 1, version: 1 }, { unique: true });
-
+  const token = await fetchToken();
   const data = await chunkAndChainPromises(
     weeks,
     week =>
@@ -85,13 +83,67 @@ async function main() {
     10,
   );
 
-  const data2 = uniqBy(d => `${d.id}--${d.version}`, [].concat(...data));
+  // const data = JSON.parse(fs.readFileSync('./data.json'));
 
-  await unavailabilities.insertMany(data2);
+  return data.reduce((res, item) => res.concat(item), []);
+}
+
+const f = omit(['updatedAt']);
+function computeNewUnavailability(
+  unavailabilityUpdates,
+  alreadySorted = false,
+) {
+  const sorted = alreadySorted
+    ? unavailabilityUpdates
+    : sortBy(
+        d => d.version,
+        uniqBy(d => `${d.id}__${d.version}`, unavailabilityUpdates),
+      ).map(omit(['version']));
+  const last = sorted.pop();
+
+  const formatted = sorted
+    .filter(u => !equals(f(u), f(last))) // remove false update
+    .map(omit(['id', 'eicCode', 'type'])); // remove useless fields
+
+  // compute updates
+  const updates = aperture(2, formatted).map(([init, update]) => {
+    return pickBy((v, key) => !equals(v, init[key]), update);
+  });
+
+  return {
+    ...last,
+    updates: formatted.length > 1 ? [formatted[0], ...updates] : formatted,
+  };
+}
+
+async function insertUnavailabities(data) {
+  const mongoClient = await MongoClient.connect(uri, {
+    useUnifiedTopology: true,
+  });
+  const db = mongoClient.db(dbName);
+  const unavailabilities = db.collection('unavailabilities');
+  await unavailabilities.dropIndexes();
+  await unavailabilities.deleteMany({});
+  await unavailabilities.createIndex({ id: 1 }, { unique: true });
+  await unavailabilities.insertMany(data);
+  await mongoClient.close();
+}
+
+async function main() {
+  console.log(process.env.NODE_ENV);
+  console.log(uri);
+  console.log(dbName);
+
+  const unavailabilities = await getAllUnavailabilities();
+
+  const unavailabilityUpdatesById = groupBy(d => d.id, unavailabilities);
+  const newUnavailabilities = values(unavailabilityUpdatesById).map(v =>
+    computeNewUnavailability(v),
+  );
+
+  await insertUnavailabities(newUnavailabilities);
 
   console.log('Done');
-
-  return mongoClient.close();
 }
 
 if (require.main === module) {
@@ -99,5 +151,6 @@ if (require.main === module) {
 }
 
 module.exports = {
+  computeNewUnavailability,
   unavailabilitiesFormatter,
 };

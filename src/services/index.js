@@ -1,8 +1,7 @@
 const moment = require('moment-timezone');
-const { uniqBy } = require('ramda');
 
 const { assertInput } = require('../utils/helpers');
-const { getRessource, DATE_FORMAT } = require('../rteApi');
+const { getRessource } = require('../rteApi');
 
 const getMix = require('./getMix');
 const { DateInput } = require('./types');
@@ -59,44 +58,22 @@ async function getProductions(input, { rteToken, logger, cache }) {
   return res;
 }
 
-async function getUnavailabilities(input, { rteToken }) {
+async function getUnavailabilities(input, { db }) {
   const dateInput = assertInput(DateInput, input);
-  const date = moment(dateInput.date).tz('Europe/Paris');
+  const date = moment(dateInput.date).startOf('day');
+  const unavailabilities = db.collection('unavailabilities');
 
-  const data = await getRessource({
-    ressource:
-      'unavailability_additional_information/v1/generation_unavailabilities',
-    params: {
-      date_type: 'APPLICATION_DATE',
-      start_date: moment(date)
-        .startOf('day')
-        .format(DATE_FORMAT),
-      end_date: moment(date)
-        .startOf('day')
-        .add(1, 'day')
-        .format(DATE_FORMAT),
-    },
-    token: rteToken,
-  });
-
-  const res = uniqBy(d => d.identifier, data.generation_unavailabilities)
-    .filter(d => d.production_type === 'NUCLEAR' && d.status !== 'CANCELLED')
-    .map(d => ({
-      id: d.identifier,
-      version: Number(d.version),
-      updatedAt: d.updated_date,
-      startDate: d.start_date,
-      endDate: d.end_date,
-      type: d.type,
-      eicCode: d.unit.eic_code,
-      reason: d.reason,
-      availablePower_MW: d.values[0].value,
-      status: d.status,
-    }))
-    .filter(
-      d =>
-        moment(date).isAfter(d.startDate) && moment(date).isBefore(d.endDate),
-    );
+  const res = unavailabilities
+    .find({
+      startDate: {
+        $lt: moment(date)
+          .add(1, 'day')
+          .toDate(),
+      },
+      endDate: { $gt: date.toDate() },
+      status: { $ne: 'CANCELLED' },
+    })
+    .toArray();
 
   return res;
 }
