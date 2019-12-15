@@ -48,7 +48,7 @@ function ReactorIndicator(props) {
   const index = Math.min(lastIndex, hourIndex);
   const currentProd = prods[index];
   const absLoad = Math.max(0, currentProd.value);
-  const part = Math.floor((absLoad / reactor.power_MW) * 100);
+  const part = Math.floor((absLoad / reactor.netPower_MW) * 100);
 
   return (
     <div

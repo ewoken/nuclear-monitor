@@ -53,7 +53,7 @@ function plantRatio(plant, currentDate) {
 
     return res + prod;
   }, 0);
-  const totalPower = plant.reactors.reduce((res, r) => res + r.power_MW, 0);
+  const totalPower = plant.reactors.reduce((res, r) => res + r.netPower_MW, 0);
 
   return totalProd / totalPower;
 }

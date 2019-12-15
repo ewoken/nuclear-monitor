@@ -59,6 +59,12 @@ function plantMenu(plant) {
           ASN
         </a>
       </Menu.Item>
+      <Menu.Item>
+        <a href={plant.edfLink} target="_blank" rel="noopener noreferrer">
+          {/* <img className="PlantView__asn" src="logo-asn.png" alt="asn" /> */}
+          EDF
+        </a>
+      </Menu.Item>
     </Menu>
   );
 }

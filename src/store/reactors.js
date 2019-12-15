@@ -152,11 +152,11 @@ export function reactorSetIndicatorsSelector(
       res2.availablePower = currentUnavailability.availablePower_MW;
     } else {
       res2.availableCount = 1;
-      res2.availablePower = reactor.power_MW;
+      res2.availablePower = reactor.netPower_MW;
     }
 
     return {
-      totalPower: res.totalPower + reactor.power_MW,
+      totalPower: res.totalPower + reactor.netPower_MW,
       availablePower: res.availablePower + res2.availablePower,
       availableCount: res.availableCount + res2.availableCount,
       totallyUnavailableCount: res.totallyUnavailableCount + res2.totally,

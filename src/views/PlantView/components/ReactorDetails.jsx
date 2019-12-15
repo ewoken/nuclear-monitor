@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import moment from 'moment-timezone';
+
 import { Descriptions, Icon, Tabs } from 'antd';
 
 import { ReactorType } from '../../../utils/types';
@@ -27,7 +29,7 @@ function ReactorDetails({
             <div className="ReactorDetails__headerLine__title">
               {reactor.name}
             </div>
-            <div>{`(${reactor.power_MW} MWe)`}</div>
+            <div>{`(${reactor.netPower_MW} MWe)`}</div>
           </div>
 
           <div>
@@ -63,15 +65,42 @@ function ReactorDetails({
             <Descriptions.Item label="Palier">
               {reactor.stage}
             </Descriptions.Item>
+            <Descriptions.Item label="Puissance thermique">
+              {`${reactor.thermalPower_MW} MW`}
+            </Descriptions.Item>
+            <Descriptions.Item label="Puissance électrique brute">
+              {`${reactor.rawPower_MW} MW`}
+            </Descriptions.Item>
+            <Descriptions.Item label="Puissance électrique nette">
+              {`${reactor.netPower_MW} MW`}
+            </Descriptions.Item>
+            <Descriptions.Item label="Aéroréfrigérants">
+              {reactor.coolingTowerCount}
+            </Descriptions.Item>
             <Descriptions.Item label="Début de construction">
-              {reactor.buildStartYear}
+              {reactor.buildStartDate}
+            </Descriptions.Item>
+            <Descriptions.Item label="Divergence">
+              {reactor.firstReactionDate}
             </Descriptions.Item>
             <Descriptions.Item label="Raccordement au réseau">
-              {reactor.gridLinkYear}
+              {reactor.gridLinkDate}
             </Descriptions.Item>
             <Descriptions.Item label="Début d'exploitation">
-              {reactor.exploitationStartYear}
+              {reactor.exploitationStartDate}
+              <br />
+              <strong>
+                {` (${moment().diff(
+                  moment(reactor.exploitationStartDate, 'DD/MM/YYYY'),
+                  'years',
+                )} ans)`}
+              </strong>
             </Descriptions.Item>
+            {reactor.moxAuthorizationDate && (
+              <Descriptions.Item label="Authorisation MOX">
+                {reactor.moxAuthorizationDate}
+              </Descriptions.Item>
+            )}
           </Descriptions>
         </Tabs.TabPane>
         <Tabs.TabPane tab="" key="production">
