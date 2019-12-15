@@ -4,7 +4,7 @@ const { assertInput } = require('../utils/helpers');
 const { getRessource } = require('../rteApi');
 
 const getMix = require('./getMix');
-const { DateInput } = require('./types');
+const { DateInput, OtherUnavalabiliesInput } = require('./types');
 
 async function getProductions(input, { rteToken, logger, cache }) {
   const dateInput = assertInput(DateInput, input);
@@ -78,8 +78,64 @@ async function getUnavailabilities(input, { db }) {
   return res;
 }
 
+async function getNextUnavailabilities(input, { db }) {
+  const { eicCode, skip, limit, date } = assertInput(
+    OtherUnavalabiliesInput,
+    input,
+  );
+  const mDate = moment(date);
+  const unavailabilities = db.collection('unavailabilities');
+
+  const cursor = await unavailabilities.find({
+    startDate: { $gt: mDate.toDate() },
+    status: { $ne: 'CANCELLED' },
+    ...(eicCode ? { eicCode } : {}),
+  });
+
+  const total = await cursor.count();
+  const data = await cursor
+    .sort({ endDate: -1 })
+    .skip(skip)
+    .limit(limit)
+    .toArray();
+
+  return {
+    total,
+    data,
+  };
+}
+
+async function getFinishedUnavailabilities(input, { db }) {
+  const { eicCode, skip, limit, date } = assertInput(
+    OtherUnavalabiliesInput,
+    input,
+  );
+  const mDate = moment(date);
+  const unavailabilities = db.collection('unavailabilities');
+
+  const cursor = await unavailabilities.find({
+    endDate: { $lt: mDate.toDate() },
+    status: { $ne: 'CANCELLED' },
+    ...(eicCode ? { eicCode } : {}),
+  });
+
+  const total = await cursor.count();
+  const data = await cursor
+    .sort({ endDate: -1 })
+    .skip(skip)
+    .limit(limit)
+    .toArray();
+
+  return {
+    total,
+    data,
+  };
+}
+
 module.exports = {
   getProductions,
   getUnavailabilities,
+  getNextUnavailabilities,
+  getFinishedUnavailabilities,
   getMix,
 };

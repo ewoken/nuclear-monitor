@@ -17,7 +17,13 @@ const {
   notFoundMiddleware,
 } = require('./utils/middlewares');
 
-const { getProductions, getUnavailabilities, getMix } = require('./services');
+const {
+  getProductions,
+  getUnavailabilities,
+  getNextUnavailabilities,
+  getFinishedUnavailabilities,
+  getMix,
+} = require('./services');
 
 function serviceWrapper(service, environment) {
   return async function wrappedService(req, res, next) {
@@ -60,6 +66,14 @@ function buildApi(environment) {
   app.get(
     '/unavailabilities',
     serviceWrapper(getUnavailabilities, environment),
+  );
+  app.get(
+    '/unavailabilities/finished',
+    serviceWrapper(getFinishedUnavailabilities, environment),
+  );
+  app.get(
+    '/unavailabilities/next',
+    serviceWrapper(getNextUnavailabilities, environment),
   );
   app.get('/mix', serviceWrapper(getMix, environment));
 
