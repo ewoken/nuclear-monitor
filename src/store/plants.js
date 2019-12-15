@@ -63,10 +63,12 @@ export function plantsLoadedSelector(state) {
 }
 
 export function plantSelector({ plantId, date }, state) {
-  return {
-    ...state.plants.data[plantId],
-    reactors: reactorsOfPlantSelector({ plantId, date }, state),
-  };
+  return (
+    state.plants.data[plantId] && {
+      ...state.plants.data[plantId],
+      reactors: reactorsOfPlantSelector({ plantId, date }, state),
+    }
+  );
 }
 
 export function plantsSelector({ date }, state) {

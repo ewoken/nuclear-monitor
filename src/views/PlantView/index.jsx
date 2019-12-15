@@ -194,7 +194,7 @@ export default connect((state, props) => {
     plants: plantsSelector({ date: currentDate }, state),
     currentPlant: plantSelector({ plantId, date: currentDate }, state),
     reactors: reactorsOfPlantSelector({ plantId, date: currentDate }, state),
-    goTo: (url, hash) =>
+    goTo: (url, hash = '') =>
       props.history.push(`${url}${props.location.search}${hash}`),
   };
 })(PlantView);
