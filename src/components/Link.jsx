@@ -13,7 +13,7 @@ function Link({ to, children }) {
 
 Link.propTypes = {
   to: PropTypes.string.isRequired,
-  children: PropTypes.arrayOf(PropTypes.element).isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 export default Link;

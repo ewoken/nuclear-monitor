@@ -125,4 +125,9 @@ body {
 
 .ant-descriptions-item-content {
   word-wrap: anywhere;
+  text-align: justify;
+}
+
+.ant-drawer .ant-table-small {
+  border: none;
 }

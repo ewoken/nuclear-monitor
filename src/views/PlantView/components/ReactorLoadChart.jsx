@@ -30,11 +30,7 @@ function ReactorLoadChart(props) {
 
   return (
     <div key={reactor.name} className="ReactorLoadChart">
-      <div>
-        {`Production ${
-          indexSelected !== null ? `à ${hour}: ${prod} MW` : '(MW)'
-        }`}
-      </div>
+      <div>{`${indexSelected !== null ? `À ${hour}: ${prod} ` : ''}MW`}</div>
       <div className="ReactorLoadChart__chart">
         <ResponsiveContainer>
           <AreaChart

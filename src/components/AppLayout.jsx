@@ -239,12 +239,13 @@ export default withRouter(
 
     return {
       isLoaded:
-        plantsLoadedSelector(state) &&
-        reactorsLoadedSelector(state) &&
-        productionsLoadedSelector({ date: currentDate }, state) &&
-        mixLoadedSelector({ date: currentDate }, state) &&
-        unavailabilitiesLoadedSelector({ date: currentDate }, state) &&
-        riversLoadedSelector(state),
+        (plantsLoadedSelector(state) &&
+          reactorsLoadedSelector(state) &&
+          productionsLoadedSelector({ date: currentDate }, state) &&
+          mixLoadedSelector({ date: currentDate }, state) &&
+          unavailabilitiesLoadedSelector({ date: currentDate }, state) &&
+          riversLoadedSelector(state)) ||
+        false,
       error: prodError || unavailabilitiesError || mixError,
 
       goTo: (url, withSearch = true) =>

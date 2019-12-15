@@ -11,8 +11,7 @@ import { isMobileOrTablet } from '../utils/index';
 
 const PROP_TYPES = {
   value: PropTypes.string.isRequired,
-  children: PropTypes.arrayOf(PropTypes.element).isRequired,
-  onToday: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
   onDate: PropTypes.func.isRequired,
 };
 
@@ -104,6 +103,8 @@ function DatePicker(props) {
   );
 }
 
-DatePicker.propTypes = WrappedDesktopDatePicker.propTypes;
+DatePicker.propTypes = {
+  ...PROP_TYPES,
+};
 
 export default DatePicker;

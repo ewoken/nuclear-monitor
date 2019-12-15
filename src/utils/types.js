@@ -1,10 +1,23 @@
 import PropTypes from 'prop-types';
 
 export const ProductionType = PropTypes.shape({
+  // startDate: PropTypes.string.isRequired,
+  // endDate: PropTypes.string.isRequired,
+  // updatedDate: PropTypes.string.isRequired,
+  value: PropTypes.number,
+});
+
+export const UnavailabilityType = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  updatedAt: PropTypes.string.isRequired,
   startDate: PropTypes.string.isRequired,
   endDate: PropTypes.string.isRequired,
-  updatedDate: PropTypes.string.isRequired,
-  value: PropTypes.number.isRequired,
+  type: PropTypes.string.isRequired,
+  eicCode: PropTypes.string.isRequired,
+  reason: PropTypes.string.isRequired,
+  status: PropTypes.string,
+  availablePower_MW: PropTypes.number.isRequired,
+  updates: PropTypes.arrayOf(PropTypes.object).isRequired,
 });
 
 export const PlantType = PropTypes.shape({
@@ -30,6 +43,7 @@ export const ReactorType = PropTypes.shape({
   gridLinkYear: PropTypes.number.isRequired,
   exploitationStartYear: PropTypes.number.isRequired,
   dayProductions: PropTypes.arrayOf(ProductionType).isRequired,
+  unavailabilities: PropTypes.arrayOf(UnavailabilityType).isRequired,
 });
 
 export const MixType = PropTypes.shape({

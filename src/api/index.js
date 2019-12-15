@@ -57,6 +57,28 @@ export async function getUnavailabilities({ date }) {
   return data;
 }
 
+export async function getNextUnavailabilities(input) {
+  const res = await doFetch(
+    `${REACT_APP_NUCLEAR_MONITOR_API}/unavailabilities/next/?${qs.stringify(
+      input,
+    )}`,
+  );
+  const data = await res.json();
+
+  return data;
+}
+
+export async function getFinishedUnavailabilities(input) {
+  const res = await doFetch(
+    `${REACT_APP_NUCLEAR_MONITOR_API}/unavailabilities/finished/?${qs.stringify(
+      input,
+    )}`,
+  );
+  const data = await res.json();
+
+  return data;
+}
+
 export async function getMix({ date }) {
   const res = await doFetch(
     `${REACT_APP_NUCLEAR_MONITOR_API}/mix?${qs.stringify({ date })}`,

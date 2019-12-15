@@ -26,15 +26,21 @@ import PlantPictures from './components/PlantPictures';
 import './index.css';
 
 const ReactorDetailsContainer = connect((state, props) => {
+  const reactor = reactorByPlantAndIndexSelector(
+    {
+      date: props.currentDate,
+      plantId: props.match.params.plantId,
+      reactorIndex: Number(props.match.params.reactorIndex),
+    },
+    state,
+  );
   return {
-    reactor: reactorByPlantAndIndexSelector(
-      {
-        date: props.currentDate,
-        plantId: props.match.params.plantId,
-        reactorIndex: Number(props.match.params.reactorIndex),
-      },
-      state,
-    ),
+    reactor,
+    setTab: tab =>
+      props.goTo(
+        `/plant/${reactor.plantId}/${reactor.reactorIndex}`,
+        `#${tab}`,
+      ),
   };
 })(ReactorDetails);
 
@@ -58,7 +64,14 @@ function plantMenu(plant) {
 }
 
 function PlantView(props) {
-  const { currentDate, plants, currentPlant, reactors, goTo } = props;
+  const {
+    currentDate,
+    currentTab,
+    plants,
+    currentPlant,
+    reactors,
+    goTo,
+  } = props;
 
   if (!currentPlant) {
     return <Redirect to="/" />;
@@ -74,7 +87,7 @@ function PlantView(props) {
                 value={currentPlant.id}
                 size="large"
                 onChange={id => goTo(`/plant/${id}`)}
-                style={{ width: '9em' }}
+                style={{ width: '10em' }}
               >
                 {plants.map(plant => (
                   <Select.Option key={plant.id} value={plant.id}>
@@ -136,7 +149,9 @@ function PlantView(props) {
                   <ReactorDetailsContainer
                     // eslint-disable-next-line react/jsx-props-no-spreading
                     {...props2}
+                    currentTab={currentTab}
                     currentDate={currentDate}
+                    goTo={goTo}
                   />
                 )}
               />
@@ -155,6 +170,7 @@ function PlantView(props) {
 
 PlantView.propTypes = {
   currentDate: PropTypes.string.isRequired,
+  currentTab: PropTypes.string.isRequired,
   plants: PropTypes.arrayOf(PlantType).isRequired,
   currentPlant: PlantType.isRequired,
   reactors: PropTypes.arrayOf(ReactorType).isRequired,
@@ -164,12 +180,15 @@ PlantView.propTypes = {
 export default connect((state, props) => {
   const { plantId } = props.match.params;
   const currentDate = getCurrentDate(props.location);
+  const currentTab = props.location.hash.substr(1);
 
   return {
     currentDate,
+    currentTab,
     plants: plantsSelector({ date: currentDate }, state),
     currentPlant: plantSelector({ plantId, date: currentDate }, state),
     reactors: reactorsOfPlantSelector({ plantId, date: currentDate }, state),
-    goTo: url => props.history.push(`${url}${props.location.search}`),
+    goTo: (url, hash) =>
+      props.history.push(`${url}${props.location.search}${hash}`),
   };
 })(PlantView);

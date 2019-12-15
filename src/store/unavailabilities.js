@@ -1,4 +1,4 @@
-import { values, indexBy, prop } from 'ramda';
+import { values } from 'ramda';
 
 import moment from 'moment';
 import { getUnavailabilities } from '../api';
@@ -26,7 +26,7 @@ function unavailabilitiesReducer(state = initialState, action) {
           loading: true,
           loaded: true,
           errors: null,
-          data: {},
+          data: [],
         },
       };
     case UNAVAILABILITIES_RECEIVE_ACTION:
@@ -36,7 +36,7 @@ function unavailabilitiesReducer(state = initialState, action) {
           loading: false,
           loaded: !action.errors,
           errors: action.errors || null,
-          data: indexBy(prop('eicCode'), action.data),
+          data: action.data,
         },
       };
     default:
@@ -59,10 +59,16 @@ export function unavailabilitiesSelector({ date: inputDate }, state) {
   return values(state.unavailabilities[date].data);
 }
 
-export function unavalabilitySelector({ date: inputDate, eicCode }, state) {
+export function reactorUnavalabilitiesSelector(
+  { date: inputDate, eicCode },
+  state,
+) {
   const date = moment(inputDate).format('YYYY-MM-DD');
   return (
-    state.unavailabilities[date] && state.unavailabilities[date].data[eicCode]
+    state.unavailabilities[date] &&
+    state.unavailabilities[date].data.filter(
+      unavailability => unavailability.eicCode === eicCode,
+    )
   );
 }
 

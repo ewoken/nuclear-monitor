@@ -8,6 +8,10 @@
   align-items: center;
 }
 
+.PlantView .ant-select-selection-selected-value {
+  font-weight: bold;
+}
+
 .PlantView__wiki {
   height: 10px;
 }
@@ -83,12 +87,41 @@
 
 .ReactorDetails {
   text-align: initial;
-  margin-top: 20px;
 }
 
 .ReactorDetails__header {
+  position: sticky;
+  z-index: 1000;
+  top: 0px;
+  background: white;
+  padding-top: 15px;
+}
+
+.ReactorDetails__headerLine {
   display: flex;
   justify-content: space-between;
+}
+
+.ReactorDetails__tabBar {
+  background: white;
+  z-index: 1000;
+}
+
+.ReactorDetails .ant-tabs-bar {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.ReactorDetails__headerLine__left {
+  display: flex;
+  align-items: center;
+}
+
+.ReactorDetails__headerLine__title {
+  color: rgb(0, 0, 0, 0.65);
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 10px;
 }
 
 .ReactorLoadChart {
@@ -115,3 +148,26 @@
 .PlantPictures .slick-track {
   background: black;
 }
+
+.ReactorDetails .ant-table-body {
+  margin: 0px !important;
+}
+
+.ReactorDetails .ant-collapse-header {
+  color: rgb(0, 0, 0, 0.65) !important;
+  padding-left: 10px !important;
+  font-weight: bold;
+}
+
+.ReactorDetails .ant-collapse-header span .anticon {
+  margin-right: 5px;
+}
+
+.ReactorDetails .ant-collapse-content-box {
+  padding: 10px !important;
+}
+
+.ReactorDetails .ant-tabs-tab .anticon {
+  margin-right: auto !important;
+}
+

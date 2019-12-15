@@ -4,7 +4,7 @@ import moment from 'moment';
 import { getReactors } from '../api';
 
 import { productionSelector } from './productions';
-import { unavalabilitySelector } from './unavailabilities';
+import { reactorUnavalabilitiesSelector } from './unavailabilities';
 
 export const REACTORS_LOAD_ACTION = 'REACTORS_LOAD_ACTION';
 export const REACTORS_RECEIVE_ACTION = 'REACTORS_RECEIVE_ACTION';
@@ -64,15 +64,20 @@ export function reactorsLoadedSelector(state) {
   return state.reactors.loaded;
 }
 
-function getStatus(unavailability) {
-  if (unavailability) {
-    if (unavailability.type === 'PLANNED_MAINTENANCE') {
-      if (unavailability.availablePower_MW === 0) {
+function getStatus(unavailabilities, inputDate) {
+  const date = moment(inputDate);
+  const currentUnavailability = unavailabilities.find(
+    u => date.isAfter(u.startDate) && date.isBefore(u.endDate),
+  );
+
+  if (currentUnavailability) {
+    if (currentUnavailability.type === 'PLANNED_MAINTENANCE') {
+      if (currentUnavailability.availablePower_MW === 0) {
         return 'PLANNED_STOP';
       }
       return 'PLANNED_REDUCTION';
     }
-    if (unavailability.availablePower_MW === 0) {
+    if (currentUnavailability.availablePower_MW === 0) {
       return 'AUTO_STOP';
     }
     return 'UNPLANNED_REDUCTION';
@@ -83,13 +88,16 @@ function getStatus(unavailability) {
 export function reactorSelector({ eicCode, date }, state) {
   const reactor = state.reactors.data[eicCode];
   const dayProductions = productionSelector({ eicCode, date }, state);
-  const unavailability = unavalabilitySelector({ eicCode, date }, state);
+  const unavailabilities = reactorUnavalabilitiesSelector(
+    { eicCode, date },
+    state,
+  );
 
   return {
     ...reactor,
-    status: getStatus(unavailability),
+    status: getStatus(unavailabilities, date),
     dayProductions,
-    unavailability,
+    unavailabilities,
   };
 }
 
@@ -130,19 +138,18 @@ export function reactorSetIndicatorsSelector(
       partially: 0,
       totally: 0,
     };
+    const currentUnavailability = reactor.unavailabilities.find(
+      u => date.isAfter(u.startDate) && date.isBefore(u.endDate),
+    );
 
-    if (
-      reactor.unavailability &&
-      date.isAfter(reactor.unavailability.startDate) &&
-      date.isBefore(reactor.unavailability.endDate)
-    ) {
-      if (reactor.unavailability.availablePower_MW === 0) {
+    if (currentUnavailability) {
+      if (currentUnavailability.availablePower_MW === 0) {
         res2.totally = 1;
       } else {
         res2.availableCount = 1;
         res2.partially = 1;
       }
-      res2.availablePower = reactor.unavailability.availablePower_MW;
+      res2.availablePower = currentUnavailability.availablePower_MW;
     } else {
       res2.availableCount = 1;
       res2.availablePower = reactor.power_MW;
