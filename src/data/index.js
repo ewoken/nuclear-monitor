@@ -17,6 +17,7 @@ const plants = readCSV(
   hasCoolingTower: plantData.hasCoolingTower === 'TRUE',
   wikiLink: plantData.wikiLink,
   asnLink: plantData.asnLink,
+  edfLink: plantData.edfLink,
   pictures: plantPictures
     .filter(p => p.plantId === plantData.id)
     .map(p => p.url),
@@ -27,10 +28,11 @@ const reactors = readCSV(
 ).map(reactorData =>
   Object.assign(reactorData, {
     reactorIndex: Number(reactorData.reactorIndex),
-    power_MW: Number(reactorData.power_MW),
-    buildStartYear: Number(reactorData.buildStartYear),
-    gridLinkYear: Number(reactorData.gridLinkYear),
-    exploitationStartYear: Number(reactorData.exploitationStartYear),
+    thermalPower_MW: Number(reactorData.thermalPower_MW),
+    rawPower_MW: Number(reactorData.rawPower_MW),
+    netPower_MW: Number(reactorData.netPower_MW),
+    coolingTowerCount: Number(reactorData.coolingTowerCount),
+    moxAuthorizationDate: reactorData.moxAuthorizationDate || null,
   }),
 );
 
