@@ -25,7 +25,7 @@ function ProductionTab({ reactor, currentDate }) {
                   .startOf('hour')
                   .toISOString(),
               }),
-              hash: 'prod',
+              hash: 'production',
             })}
           >
             <Icon
