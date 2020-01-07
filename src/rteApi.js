@@ -50,7 +50,7 @@ async function getRessourceFn({ ressource, params = {}, token }) {
   if (!res.ok) {
     const payload = {
       code: res.status,
-      body: res.text,
+      body: await res.text(),
     };
     throw new RTEServiceError('RTE Error', payload);
   }

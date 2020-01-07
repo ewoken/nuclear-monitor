@@ -94,7 +94,7 @@ async function getNextUnavailabilities(input, { db }) {
 
   const total = await cursor.count();
   const data = await cursor
-    .sort({ endDate: -1 })
+    .sort({ startDate: 1 })
     .skip(skip)
     .limit(limit)
     .toArray();
