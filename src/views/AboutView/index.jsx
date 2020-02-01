@@ -34,6 +34,30 @@ function Content() {
           {' @Yugnat95'}
         </a>
       </p>
+
+      <p>
+        {"D'autres sites pour suivre les données électriques:"}
+        <ul>
+          <li>
+            <a
+              href="https://www.rte-france.com/fr/eco2mix/eco2mix-mix-energetique"
+              target="blanck"
+            >
+              éco2mix
+            </a>
+          </li>
+          <li>
+            <a href="https://www.electricitymap.org" target="blanck">
+              electricity-map
+            </a>
+          </li>
+          <li>
+            <a href="http://www.facteurs-charge.fr/" target="blanck">
+              facteurs-charge.fr
+            </a>
+          </li>
+        </ul>
+      </p>
     </div>
   );
 }
