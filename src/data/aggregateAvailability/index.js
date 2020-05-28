@@ -29,7 +29,7 @@ async function main() {
   const prodData = getAllProd();
   console.info('Prod data loaded');
 
-  const startAll = '2016-01-01';
+  const startAll = '2015-01-01';
   const endAll = '2020-01-01';
 
   const allUnavailabilities = await unavailabilities
@@ -92,6 +92,9 @@ async function main() {
     slots.map(slot => ({
       ...slot,
       total: reactors.reduce((sum, reactor) => sum + slot[reactor.name], 0),
+      full_available: reactors.filter(r => r.netPower_MW === slot[r.name])
+        .length,
+      stopped: reactors.filter(r => slot[r.name] === 0).length,
     })),
   );
 

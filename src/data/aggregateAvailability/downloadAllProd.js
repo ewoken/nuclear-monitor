@@ -61,7 +61,7 @@ async function downloadYearProd(eicCode, year, token) {
 }
 
 async function main() {
-  const years = range(2016, 2020);
+  const years = range(2015, 2020);
   const token = await fetchToken();
 
   const d = years.map(year => {
@@ -81,7 +81,7 @@ async function main() {
 }
 
 function getAllProd() {
-  const years = range(2016, 2020);
+  const years = range(2015, 2020);
 
   return years.reduce((acc, year) => {
     const data = reactors.reduce((acc2, reactor) => {
