@@ -9,8 +9,9 @@ const { DateInput, OtherUnavalabiliesInput } = require('./types');
 async function getProductions(input, { rteToken, logger, cache }) {
   const dateInput = assertInput(DateInput, input);
   const date = moment(dateInput.date).tz('Europe/Paris');
-  const isToday = date.isSame(moment().tz('Europe/Paris'), 'day');
-  const isCitrouille = isToday && date.hour() < 1;
+  const now = moment().tz('Europe/Paris');
+  const isToday = date.isSame(now, 'day');
+  const isCitrouille = isToday && now.hours() <= 2;
 
   const key = `PROD-${date.format('YYYY-MM-DD-HH')}`;
   const cacheRes = cache.getValue(key);

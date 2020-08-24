@@ -32,7 +32,6 @@ async function updateUnavailabies(environment) {
   const lastDate = moment(lastUpdatedUnavailability.updatedAt).tz(
     'Europe/Paris',
   );
-
   // const lastDate = moment('2019-12-01').tz('Europe/Paris');
 
   const data = await getRessource({
