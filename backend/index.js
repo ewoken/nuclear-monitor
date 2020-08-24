@@ -27,7 +27,7 @@ async function launchApp() {
   };
 
   initJobs(environment);
-  const app = buildApi(environment);
+  const app = await buildApi(environment);
 
   const port = normalizePort(config.get('server.port'));
   const server = app.listen(port, () => {

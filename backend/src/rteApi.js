@@ -1,6 +1,6 @@
-const fetch = require('node-fetch');
 const qs = require('qs');
 const config = require('config');
+const fetch = require('isomorphic-fetch');
 
 const { retryWrapper } = require('./utils/helpers');
 const { DefaultError } = require('./utils/errors');

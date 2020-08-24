@@ -133,10 +133,22 @@ async function getFinishedUnavailabilities(input, { db }) {
   };
 }
 
+async function getRiverFlows(input, { db }) {
+  const dateInput = assertInput(DateInput, input);
+  const res = await db.collection('flows').findOne({
+    date: moment(dateInput.date)
+      .utc()
+      .startOf('day')
+      .toDate(),
+  });
+  return res;
+}
+
 module.exports = {
   getProductions,
   getUnavailabilities,
   getNextUnavailabilities,
   getFinishedUnavailabilities,
   getMix,
+  getRiverFlows,
 };

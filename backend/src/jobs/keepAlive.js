@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+const fetch = require('isomorphic-fetch');
 const config = require('config');
 
 const HOST = config.get('server.host');

@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+const fetch = require('isomorphic-fetch');
 const moment = require('moment-timezone');
 const { transpose, mergeAll, omit } = require('ramda');
 const qs = require('qs');

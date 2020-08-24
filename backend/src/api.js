@@ -7,7 +7,7 @@ const cors = require('cors');
 const compression = require('compression');
 const helmet = require('helmet');
 
-const { plants: PLANTS, reactors: REACTORS } = require('./data');
+const { getPlants, reactors: REACTORS } = require('./data');
 const { RTEServiceError } = require('./rteApi');
 
 const {
@@ -23,6 +23,7 @@ const {
   getNextUnavailabilities,
   getFinishedUnavailabilities,
   getMix,
+  getRiverFlows,
 } = require('./services');
 
 function serviceWrapper(service, environment) {
@@ -42,7 +43,7 @@ function serviceWrapper(service, environment) {
   };
 }
 
-function buildApi(environment) {
+async function buildApi(environment) {
   const app = express();
   const { logger } = environment;
 
@@ -54,8 +55,9 @@ function buildApi(environment) {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
 
+  const plants = await getPlants();
   app.get('/plants', (req, res) => {
-    res.json(PLANTS);
+    res.json(plants);
   });
 
   app.get('/reactors', (req, res) => {
@@ -76,6 +78,7 @@ function buildApi(environment) {
     serviceWrapper(getNextUnavailabilities, environment),
   );
   app.get('/mix', serviceWrapper(getMix, environment));
+  app.get('/flows', serviceWrapper(getRiverFlows, environment));
 
   if (process.env.NODE_ENV !== 'production') {
     app.get('/token', (req, res) => {
