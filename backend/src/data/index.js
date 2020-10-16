@@ -24,6 +24,8 @@ const plants = readCSV(
     .map(p => p.url),
   hydroPositionCode: plantData.hydroPositionCode || null,
   hasHydroHistoric: plantData.hasHydroHistoric === '1',
+  hydroDataStart: Number(plantData.hydroDataStart),
+  hydroDataEnd: Number(plantData.hydroDataEnd),
 }));
 
 let plantData = null;
