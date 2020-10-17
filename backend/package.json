@@ -1,0 +1,59 @@
+{
+  "name": "nuclear-monitor-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --ignore-path .gitignore --ignore-pattern \"!**/.*\" .",
+    "fix": "eslint --ignore-path .gitignore --ignore-pattern \"!**/.*\" --fix .",
+    "watch": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-prettier": "^6.13.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^3.1.0",
+    "lint-staged": "^9.5.0",
+    "nodemon": "^1.19.4",
+    "prettier": "^1.19.1"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --no-ignore"
+    ],
+    "*.json": [
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "config": "^3.3.2",
+    "cors": "^2.8.5",
+    "es6-error": "^4.1.1",
+    "express": "^4.17.1",
+    "helmet": "^3.23.3",
+    "joi": "^14.3.1",
+    "moment-timezone": "^0.5.31",
+    "mongodb": "^3.6.2",
+    "node-fetch": "^2.6.0",
+    "on-finished": "^2.3.0",
+    "on-headers": "^1.0.2",
+    "qs": "^6.9.4",
+    "ramda": "^0.26.1",
+    "server-destroy": "^1.0.1",
+    "uuid": "^3.4.0",
+    "winston": "^3.3.3"
+  }
+}
