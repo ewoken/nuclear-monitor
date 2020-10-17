@@ -1,0 +1,133 @@
+body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+}
+
+
+.App {
+  height: 100%;
+}
+
+.AppLayout__header {
+  display: flex;
+}
+
+/* .AppLayout__header .AppLayout__menu {
+  margin-left: 10%;
+} */
+
+.AppLayout__menu li {
+  line-height: 64px;
+}
+
+.ant-drawer-content-wrapper {
+  overflow-y: scroll;
+}
+
+.ant-drawer-left .ant-drawer-content-wrapper {
+  height: calc(100% - 64px) !important;
+}
+
+.ant-drawer .ant-drawer-content-wrapper .ant-drawer-content {
+  min-height: 100%;
+  height: auto;
+}
+
+.AppLayout__content {
+  width: 100%;
+  margin: 0;
+}
+
+.AppLayout__splash {
+  height: 100%;
+  padding-top: 50%;
+  text-align: center;
+}
+
+.AppLayout__loadingIcon {
+  height: 100px !important;
+  width: 100px !important;
+  -webkit-animation:spin 4s linear infinite;
+  -moz-animation:spin 4s linear infinite;
+  animation: spin 4s linear infinite;
+  position: fixed;
+  top: calc(50% - 50px);
+  left: calc(50% - 50px);
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+.AppLayout__errorMessage {
+  width: 50%;
+  color: black;
+  font-size: 12pt;
+  position: fixed;
+  bottom: 100px;
+  left: 25%;
+}
+
+.AppLayout__submenu {
+  left: 10px !important;
+}
+
+.AppLayout__header.ant-layout-header {
+  position: fixed;
+  z-index: 100;
+  width: 100%;
+  padding: 0 0px;
+}
+
+.AppLayout__header__date {
+  height: 100%;
+  color: rgba(255, 255, 255, 0.65);
+  position: absolute;
+  top: 0;
+  right: 20px;
+  display: flex;
+  cursor: pointer;
+}
+
+.AppLayout__header__date__text {
+  font-size: 8pt;
+  line-height: initial;
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  justify-content: center;
+  margin-right: 5px;
+}
+
+.AppLayout__header__date__calendar {
+  font-size: 20px;
+}
+
+.HomeView {
+  padding: 15px;
+}
+
+.HomeView__marker {
+  margin-top: 50px;
+  text-align: center;
+  font-size: 9pt;
+}
+
+.ant-calendar-picker-container {
+  top: 64px !important;
+  right: 20px !important;
+  left: unset !important;
+}
+
+.ant-calendar-input-wrap {
+  display: none !important;
+}
+
+.ant-descriptions-item-content {
+  word-wrap: anywhere;
+  text-align: justify;
+}
+
+.ant-drawer .ant-table-small {
+  border: none;
+}
