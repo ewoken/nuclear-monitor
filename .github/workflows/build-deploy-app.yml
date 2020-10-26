@@ -1,0 +1,42 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Build & Deploy app
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-deploy-app:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      APP_CNAME: nuclear-monitor.fr
+      REACT_APP_NUCLEAR_MONITOR_API: https://nuclear-monitor-backend.herokuapp.com
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./app
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "12"
+      - name: Cache
+        uses: actions/cache@v2.1.2
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('./app/package-lock.json') }}
+          restore-keys: npm-
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: ./app/build

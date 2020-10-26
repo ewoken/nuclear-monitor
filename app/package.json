@@ -36,8 +36,7 @@
     "build": "./scripts/build.sh",
     "doBuild": "react-app-rewired build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "deploy": "gh-pages -d build --message \"[ci skip] Circle CI deploy\" --user \"Circle CI <circleci@circleci.org>\""
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -61,10 +60,9 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "^7.14.3",
-    "gh-pages": "^2.1.1",
     "husky": "^3.0.4",
     "lint-staged": "^9.2.3",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "prettier": "^1.18.2"
   },
   "lint-staged": {
