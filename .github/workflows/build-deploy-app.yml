@@ -16,7 +16,7 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       APP_CNAME: nuclear-monitor.fr
-      REACT_APP_NUCLEAR_MONITOR_API: https://nuclear-monitor-backend.herokuapp.com
+      REACT_APP_NUCLEAR_MONITOR_API: https://nuclear-monitor.herokuapp.com
     defaults:
       run:
         shell: bash
