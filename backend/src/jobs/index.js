@@ -1,7 +1,8 @@
 const updateRteTokenJob = require('./updateRteToken');
 const updateUnavailabilitiesJob = require('./updateUnavailavilities');
+const keepAliveJob = require('./keepAlive');
 
-const jobs = [updateRteTokenJob, updateUnavailabilitiesJob];
+const jobs = [updateRteTokenJob, updateUnavailabilitiesJob, keepAliveJob];
 
 function initJobs(environment) {
   const jobIds = jobs.map(job => {
