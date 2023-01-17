@@ -97,7 +97,7 @@ function ReactorDetails({
               </strong>
             </Descriptions.Item>
             {reactor.moxAuthorizationDate && (
-              <Descriptions.Item label="Authorisation MOX">
+              <Descriptions.Item label="Autorisation MOX">
                 {reactor.moxAuthorizationDate}
               </Descriptions.Item>
             )}
